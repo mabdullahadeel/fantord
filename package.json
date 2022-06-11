@@ -1,0 +1,12 @@
+{
+  "name": "fantord",
+  "private": true,
+  "workspaces": {
+    "packages": [
+      "intercooler"
+    ],
+    "nohoist": [
+      "**"
+    ]
+  }
+}
