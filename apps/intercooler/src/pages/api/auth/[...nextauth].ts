@@ -1,39 +1,16 @@
-import NextAuth, {
-  Awaitable,
-  Session,
-  User as NextAuthDefaultUser,
-} from "next-auth";
-import DiscordProvider, {
-  DiscordProfile as DiscordProfileResponse,
-} from "next-auth/providers/discord";
+import NextAuth, { Awaitable } from "next-auth";
+import DiscordProvider from "next-auth/providers/discord";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { PrismaClient } from "@fantord/prisma";
-
+import {
+  DiscordProfileResponse,
+  FantordUser,
+} from "src/server/types/user-types";
+import {
+  generateFantordUsername,
+  generateProfileUrl,
+} from "src/server/utils/auth";
 const prisma = new PrismaClient();
-
-interface FantordUser extends NextAuthDefaultUser {
-  fantordUsername: string;
-}
-
-interface FtdSession extends Session {
-  userId: string;
-}
-
-const generateProfileUrl = (profile: DiscordProfileResponse) => {
-  if (profile.avatar === null) {
-    const defaultAvatarNumber = parseInt(profile.discriminator) % 5;
-    const defaultProfileUrl = `https://cdn.discordapp.com/embed/avatars/${defaultAvatarNumber}.png`;
-    return defaultProfileUrl;
-  }
-  const format = profile.avatar.startsWith("a_") ? "gif" : "png";
-  const profileUrl = `https://cdn.discordapp.com/avatars/${profile.id}/${profile.avatar}.${format}`;
-  return profileUrl;
-};
-
-const generateFantordUsername = (profile: DiscordProfileResponse) => {
-  const username = `${profile.username}#${profile.discriminator}`;
-  return username;
-};
 
 export default NextAuth({
   adapter: PrismaAdapter(prisma),
@@ -58,6 +35,9 @@ export default NextAuth({
       },
     }),
   ],
+  pages: {
+    signIn: "/",
+  },
   session: {
     strategy: "jwt",
   },
@@ -85,10 +65,10 @@ export default NextAuth({
       }
       return session;
     },
-    async jwt({ user, profile, token, isNewUser }) {
+    async jwt({ user, profile, token, isNewUser, account }) {
       const ftdUser = user as FantordUser;
       const discordProfille = profile as DiscordProfileResponse;
-      if (isNewUser) {
+      if (isNewUser && account?.provider === "discord") {
         try {
           await prisma.discordProfile.create({
             data: {
