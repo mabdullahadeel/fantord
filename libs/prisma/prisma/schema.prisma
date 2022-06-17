@@ -24,7 +24,7 @@ model Account {
   id_token                String?  @db.Text
   session_state           String?
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user                    User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
   @@map("accounts")
@@ -42,10 +42,13 @@ model DiscordProfile {
   flags                   Int
   public_flags            Int
   mfa_enabled             Boolean
+  createdAt               DateTime  @default(now()) @map("created_at")
+  updatedAt               DateTime  @updatedAt @map("updated_at") @default(now())
   
   user                    User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("discord_profiles")
+  @@index([userId, discordId])
 }
 
 model User {
@@ -58,6 +61,8 @@ model User {
   accounts                Account[]
   sessions                Session[]
   discordProfile          DiscordProfile?
+  createdAt               DateTime  @default(now()) @map("created_at")
+  updatedAt               DateTime  @updatedAt @map("updated_at") @default(now())
 
   @@map("users")
 }

@@ -95,4 +95,26 @@ export default NextAuth({
       return token;
     },
   },
+  events: {
+    signIn: async ({ account, profile, isNewUser }) => {
+      if (isNewUser) return;
+      try {
+        await prisma.account.update({
+          where: {
+            provider_providerAccountId: {
+              provider: "discord",
+              providerAccountId:
+                profile?.id || (account.providerAccountId as any),
+            },
+          },
+          data: {
+            ...account,
+          },
+        });
+        console.log("account update successfully");
+      } catch (error) {
+        console.log("Could not update the account");
+      }
+    },
+  },
 });
