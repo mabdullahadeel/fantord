@@ -11,6 +11,8 @@ import {
   generateFantordUsername,
   generateProfileUrl,
 } from "src/server/utils/auth";
+import { UserClient } from "@fantord/datalink";
+
 const prisma = new PrismaClient();
 
 export default NextAuth({
@@ -71,7 +73,7 @@ export default NextAuth({
       const discordProfille = profile as DiscordProfileResponse;
       if (isNewUser && account?.provider === "discord") {
         try {
-          await db.createFtdDiscordUser({
+          await db.createFtdDiscordProfile({
             user: ftdUser,
             profile: discordProfille,
           });
@@ -83,14 +85,28 @@ export default NextAuth({
     },
   },
   events: {
-    signIn: async ({ account, profile, isNewUser }) => {
-      if (isNewUser) return;
-      const prof = profile as FantordUser;
+    signIn: async ({ account, profile, isNewUser, user }) => {
       try {
-        await db.updateUserDiscordAccount({ account, profile: prof });
-        console.log("account update successfully");
+        const userGuilds = await new UserClient().getUserGuilds(
+          account.access_token!
+        );
+        if (userGuilds && userGuilds.length > 0) {
+          await db.addUserGuilds({
+            user: user as FantordUser,
+            guilds: userGuilds,
+          });
+        }
       } catch (error) {
-        console.log("Could not update the account");
+        console.log("Error while adding/updating user guilds", error);
+      }
+      if (isNewUser) return;
+      try {
+        await db.updateUserDiscordAccount({
+          account,
+          profile: profile as FantordUser,
+        });
+      } catch (error) {
+        console.log("Could not update the account ", error);
       }
     },
   },

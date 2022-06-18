@@ -42,8 +42,8 @@ model DiscordProfile {
   flags                   Int
   public_flags            Int
   mfa_enabled             Boolean
-  createdAt               DateTime  @default(now()) @map("created_at")
-  updatedAt               DateTime  @updatedAt @map("updated_at") @default(now())
+  createdAt               DateTime?  @default(now()) @map("created_at")
+  updatedAt               DateTime?  @updatedAt @map("updated_at") @default(now())
   
   user                    User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -61,10 +61,24 @@ model User {
   accounts                Account[]
   sessions                Session[]
   discordProfile          DiscordProfile?
-  createdAt               DateTime  @default(now()) @map("created_at")
-  updatedAt               DateTime  @updatedAt @map("updated_at") @default(now())
+  guilds                  UserGuilds[]
+  createdAt               DateTime?  @default(now()) @map("created_at")
+  updatedAt               DateTime?  @updatedAt @map("updated_at") @default(now())
 
   @@map("users")
+}
+
+model UserGuilds {
+  id                      String @id @default(cuid())
+  discordGuildId          String @map("discord_guild_id")
+  userId                  String @map("user_id")
+  name                    String
+  icon                    String
+  isOwner                 Boolean @map("is_owner")
+  permissions             String
+  showPublic              Boolean @default(true) @map("show_public")
+  user                    User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@map("user_guilds")
 }
 
 model Session {
