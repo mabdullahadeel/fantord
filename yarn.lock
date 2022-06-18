@@ -1117,6 +1117,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fantord/datalink@workspace:libs/datalink"
   dependencies:
+    "@types/next-auth": ^3.15.0
     "@types/node": ^16.11.5
     axios: ^0.27.2
     dotenv: ^16.0.1
@@ -1443,6 +1444,15 @@ __metadata:
   version: 4.14.182
   resolution: "@types/lodash@npm:4.14.182"
   checksum: 7dd137aa9dbabd632408bd37009d984655164fa1ecc3f2b6eb94afe35bf0a5852cbab6183148d883e9c73a958b7fec9a9bcf7c8e45d41195add6a18c34958209
+  languageName: node
+  linkType: hard
+
+"@types/next-auth@npm:^3.15.0":
+  version: 3.15.0
+  resolution: "@types/next-auth@npm:3.15.0"
+  dependencies:
+    next-auth: "*"
+  checksum: f37b3574fc619a2d1bef9c1a7c22975b9b73c40adb90d6f764a89153fc945372ed33bfd3afae3fa9a536400dc41fdc2391ad472b5eb0fc470834f94badd2114d
   languageName: node
   linkType: hard
 
@@ -3457,6 +3467,30 @@ __metadata:
   version: 1.4.0
   resolution: "natural-compare@npm:1.4.0"
   checksum: 23ad088b08f898fc9b53011d7bb78ec48e79de7627e01ab5518e806033861bef68d5b0cd0e2205c2f36690ac9571ff6bcb05eb777ced2eeda8d4ac5b44592c3d
+  languageName: node
+  linkType: hard
+
+"next-auth@npm:*":
+  version: 4.5.0
+  resolution: "next-auth@npm:4.5.0"
+  dependencies:
+    "@babel/runtime": ^7.16.3
+    "@panva/hkdf": ^1.0.1
+    cookie: ^0.4.1
+    jose: ^4.3.7
+    oauth: ^0.9.15
+    openid-client: ^5.1.0
+    preact: ^10.6.3
+    preact-render-to-string: ^5.1.19
+    uuid: ^8.3.2
+  peerDependencies:
+    nodemailer: ^6.6.5
+    react: ^17.0.2 || ^18
+    react-dom: ^17.0.2 || ^18
+  peerDependenciesMeta:
+    nodemailer:
+      optional: true
+  checksum: b27a3337d0e89571d27c782661ef3abcfab1344885290c92e253efd22af4acad4a6a676db74466ea5fe57cfc012407a4cb4a660069a208c1ca6bc47cf172a1c8
   languageName: node
   linkType: hard
 

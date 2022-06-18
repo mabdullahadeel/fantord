@@ -1,11 +1,12 @@
 import NextAuth, { Awaitable } from "next-auth";
 import DiscordProvider from "next-auth/providers/discord";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import { PrismaClient } from "@fantord/prisma";
 import {
+  PrismaClient,
+  db,
   DiscordProfileResponse,
   FantordUser,
-} from "src/server/types/user-types";
+} from "@fantord/prisma";
 import {
   generateFantordUsername,
   generateProfileUrl,
@@ -70,23 +71,9 @@ export default NextAuth({
       const discordProfille = profile as DiscordProfileResponse;
       if (isNewUser && account?.provider === "discord") {
         try {
-          await prisma.discordProfile.create({
-            data: {
-              discordId: discordProfille.id,
-              discriminator: discordProfille.discriminator,
-              flags: discordProfille.flags,
-              public_flags: discordProfille.public_flags,
-              username: discordProfille.username,
-              avatar: discordProfille.avatar,
-              verified: discordProfille.verified,
-              locale: discordProfille.locale,
-              mfa_enabled: discordProfille.mfa_enabled,
-              user: {
-                connect: {
-                  id: ftdUser.id,
-                },
-              },
-            },
+          await db.createFtdDiscordUser({
+            user: ftdUser,
+            profile: discordProfille,
           });
         } catch (error) {
           throw error;
@@ -98,19 +85,9 @@ export default NextAuth({
   events: {
     signIn: async ({ account, profile, isNewUser }) => {
       if (isNewUser) return;
+      const prof = profile as FantordUser;
       try {
-        await prisma.account.update({
-          where: {
-            provider_providerAccountId: {
-              provider: "discord",
-              providerAccountId:
-                profile?.id || (account.providerAccountId as any),
-            },
-          },
-          data: {
-            ...account,
-          },
-        });
+        await db.updateUserDiscordAccount({ account, profile: prof });
         console.log("account update successfully");
       } catch (error) {
         console.log("Could not update the account");

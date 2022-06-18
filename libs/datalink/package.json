@@ -11,6 +11,7 @@
     "start:dev": "yarn run build:watch"
   },
   "devDependencies": {
+    "@types/next-auth": "^3.15.0",
     "@types/node": "^16.11.5",
     "rimraf": "^3.0.2",
     "ts-node": "^10.4.0",

@@ -1,34 +1,40 @@
 import "dotenv/config";
 import axios, { AxiosInstance } from "axios";
-import { SupportedDiscordAPIVersions } from "./types/base-client.types";
-
-class BaseFantordDiscordClient {
+import { DiscordTokenResponse } from "./types/auth-client.types";
+export class DiscordAuthClient {
   private discordClientId: string;
   private discordClientSecret: string;
-  discordAPIVersion: SupportedDiscordAPIVersions;
   axiosInstance: AxiosInstance | null;
+  readonly discordAuthBaseUri = "https://discord.com/api/oauth2";
 
-  constructor(discordAPIVersion: SupportedDiscordAPIVersions = "10") {
+  constructor() {
     this.discordClientId = process.env.DISCORD_CLIENT_ID!;
     this.discordClientSecret = process.env.DISCORD_CLIENT_SECRET!;
     if (!this.discordClientId || !this.discordClientSecret) {
       throw new Error("Missing environment variables for Discord API");
     }
-    this.discordAPIVersion = discordAPIVersion;
     this.axiosInstance = this.configureAxios();
   }
 
   private configureAxios(): AxiosInstance {
-    const discordAPIBaseUri =
-      "https://discord.com/api/v" + this.discordAPIVersion;
     const axiosInstance = axios.create({
-      baseURL: discordAPIBaseUri,
-      auth: {
-        username: this.discordClientId,
-        password: this.discordClientSecret,
+      baseURL: this.discordAuthBaseUri,
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
       },
     });
 
     return axiosInstance;
   }
+
+  async refreshToken(refreshToken: string): Promise<DiscordTokenResponse> {
+    return this.axiosInstance.post(this.discordAuthBaseUri + "/token", {
+      client_id: this.discordClientId,
+      client_secret: this.discordClientSecret,
+      grant_type: "refresh_token",
+      refresh_token: refreshToken,
+    });
+  }
 }
+
+export const authClient = new DiscordAuthClient();
