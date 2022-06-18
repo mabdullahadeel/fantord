@@ -1113,7 +1113,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fantord/datalink@workspace:libs/datalink":
+"@fantord/datalink@workspace:*, @fantord/datalink@workspace:libs/datalink":
   version: 0.0.0-use.local
   resolution: "@fantord/datalink@workspace:libs/datalink"
   dependencies:
@@ -1134,6 +1134,7 @@ __metadata:
     "@chakra-ui/react": ^2.2.1
     "@emotion/react": 11
     "@emotion/styled": 11
+    "@fantord/datalink": "workspace:*"
     "@fantord/prisma": "workspace:*"
     "@next-auth/prisma-adapter": ^1.0.3
     "@types/react": 18.0.12
@@ -1151,6 +1152,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fantord/prisma@workspace:libs/prisma"
   dependencies:
+    "@fantord/datalink": "workspace:*"
     "@prisma/client": latest
     "@types/node": ^16.11.5
     npm-run-all: ^4.1.5

@@ -17,15 +17,15 @@ export class UserClient extends BaseFantordDiscordClient {
         {
           headers: {
             Authorization: `${
-              opts.tokenType || this.defaultTokenType
+              opts?.tokenType || this.defaultTokenType
             } ${token}`,
           },
         }
       );
-      opts.onSuccess ?? opts.onSuccess(data);
+      opts?.onSuccess ?? opts.onSuccess(data);
       return data;
     } catch (err) {
-      opts.onFailuer ?? opts.onFailuer(err);
+      opts?.onFailuer ?? opts.onFailuer(err);
       return Promise.reject(err);
     }
   }
@@ -36,22 +36,20 @@ export class UserClient extends BaseFantordDiscordClient {
   ): Promise<DiscordUserGuilds[]> {
     try {
       const { data } = await this.axiosInstance.get<DiscordUserGuilds[]>(
-        `${this.userBaseUri}/@me`,
+        `${this.userBaseUri}/@me/guilds`,
         {
           headers: {
             Authorization: `${
-              opts.tokenType || this.defaultTokenType
+              opts?.tokenType || this.defaultTokenType
             } ${token}`,
           },
         }
       );
-      opts.onSuccess ?? opts.onSuccess(data);
+      opts?.onSuccess ? opts.onSuccess(data) : null;
       return data;
     } catch (err) {
-      opts.onFailuer ?? opts.onFailuer(err);
+      opts?.onFailuer ? opts.onFailuer(err) : null;
       return Promise.reject(err);
     }
   }
 }
-
-export const userClient = new UserClient();

@@ -28,6 +28,6 @@ export interface DiscordUserGuilds {
   name: string;
   icon: string;
   owner: boolean;
-  permissions: number;
+  permissions: string;
   features: DiscordGuilFeatures[];
 }

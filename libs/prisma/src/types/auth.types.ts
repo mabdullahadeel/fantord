@@ -1,8 +1,6 @@
-import type { User as NextAuthDefaultUser } from "next-auth";
+import { User } from "@prisma/client";
 import type { DiscordProfile } from "next-auth/providers/discord";
 
-export interface FantordUser extends NextAuthDefaultUser {
-  fantordUsername: string;
-}
+export interface FantordUser extends User {}
 
 export interface DiscordProfileResponse extends DiscordProfile {}

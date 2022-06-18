@@ -36,5 +36,3 @@ export class DiscordAuthClient {
     });
   }
 }
-
-export const authClient = new DiscordAuthClient();
