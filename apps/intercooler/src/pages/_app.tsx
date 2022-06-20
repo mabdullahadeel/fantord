@@ -1,6 +1,4 @@
 import "@fontsource/space-grotesk";
-import { surkulTheme } from "src/theme/SurkulTheme";
-
 import "../styles/globals.css";
 import { SessionProvider } from "next-auth/react";
 import type { AppProps } from "next/app";
