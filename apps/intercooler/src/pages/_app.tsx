@@ -1,17 +1,18 @@
+import "@fontsource/space-grotesk";
 import "../styles/globals.css";
 import { SessionProvider } from "next-auth/react";
 import type { AppProps } from "next/app";
-import { ChakraProvider } from "@chakra-ui/react";
+import ThemeProvider from "src/theme/ThemeProvider";
 
 function MyApp({ Component, pageProps }: AppProps) {
   const { session: nextAuthSession, ...restPageProps } = pageProps;
 
   return (
-    <ChakraProvider>
+    <ThemeProvider>
       <SessionProvider session={nextAuthSession}>
         <Component {...restPageProps} />
       </SessionProvider>
-    </ChakraProvider>
+    </ThemeProvider>
   );
 }
 

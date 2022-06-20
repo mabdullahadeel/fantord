@@ -10,6 +10,31 @@ import {
 import { BuiltInProviderType } from "next-auth/providers";
 import { useRouter } from "next/router";
 
+import { FormLabel, Switch, useColorMode } from "@chakra-ui/react";
+export const ThemeToggler = ({ showLabel = false, ...rest }) => {
+  const { toggleColorMode, colorMode } = useColorMode();
+  return (
+    <>
+      {showLabel && (
+        <FormLabel htmlFor="theme-toggler" mb={0}>
+          Enable Dark Theme
+        </FormLabel>
+      )}
+      <Switch
+        id="theme-toggler"
+        size="lg"
+        isChecked={colorMode === "dark"}
+        isDisabled={false}
+        value={colorMode}
+        colorScheme="green"
+        mr={2}
+        onChange={toggleColorMode}
+        {...rest}
+      />
+    </>
+  );
+};
+
 type NextAuthProviders = Record<
   LiteralUnion<BuiltInProviderType, string>,
   ClientSafeProvider
@@ -56,14 +81,20 @@ export const SignInPage: React.FC = () => {
       <Center width="100vw" height="100vh">
         <Container>
           <Stack spacing={4} w="100%">
+            <Button variant="outline" w="100%" onClick={() => {}}>
+              Signin with Discord
+            </Button>
+            <Button variant="solid" w="100%" onClick={() => {}}>
+              Signin with Discord
+            </Button>
+            <ThemeToggler />
             {Object.values(availableProviders).map((provider) => (
               <Button
-                colorScheme="purple"
                 w="100%"
                 onClick={() => signIn(provider.id)}
                 key={provider.id}
               >
-                {provider.name}
+                Signin with {provider.name}
               </Button>
             ))}
           </Stack>

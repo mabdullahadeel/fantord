@@ -86,27 +86,29 @@ export default NextAuth({
   },
   events: {
     signIn: async ({ account, profile, isNewUser, user }) => {
-      try {
-        const userGuilds = await new UserClient().getUserGuilds(
-          account.access_token!
-        );
-        if (userGuilds && userGuilds.length > 0) {
-          await db.addUserGuilds({
-            user: user as FantordUser,
-            guilds: userGuilds,
-          });
+      if (isNewUser) {
+        try {
+          const userGuilds = await new UserClient().getUserGuilds(
+            account.access_token!
+          );
+          if (userGuilds && userGuilds.length > 0) {
+            await db.addUserGuilds({
+              user: user as FantordUser,
+              guilds: userGuilds,
+            });
+          }
+        } catch (error) {
+          console.log("Error while adding/updating user guilds", error);
         }
-      } catch (error) {
-        console.log("Error while adding/updating user guilds", error);
-      }
-      if (isNewUser) return;
-      try {
-        await db.updateUserDiscordAccount({
-          account,
-          profile: profile as FantordUser,
-        });
-      } catch (error) {
-        console.log("Could not update the account ", error);
+      } else {
+        try {
+          await db.updateUserDiscordAccount({
+            account,
+            profile: profile as FantordUser,
+          });
+        } catch (error) {
+          console.log("Could not update the account ", error);
+        }
       }
     },
   },
