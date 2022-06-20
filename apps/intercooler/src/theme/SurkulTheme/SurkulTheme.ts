@@ -1,5 +1,6 @@
 import { extendTheme } from "@chakra-ui/react";
 import { Button } from "./components";
+import { StyleFunctionProps } from "@chakra-ui/theme-tools";
 
 export const surkulTheme = extendTheme({
   colors: {
@@ -25,5 +26,12 @@ export const surkulTheme = extendTheme({
   },
   components: {
     Button,
+  },
+  styles: {
+    global: {
+      body: (props: StyleFunctionProps) => ({
+        bg: props.colorMode === "dark" ? "brand.100" : "brand.900",
+      }),
+    },
   },
 });

@@ -35,7 +35,7 @@ export const Button: ComponentStyleConfig = {
   // default values for 'size', 'variant' and 'colorScheme'
   defaultProps: {
     size: "md",
-    variant: "outline",
-    colorScheme: "",
+    variant: "solid",
+    colorScheme: "brand",
   },
 };

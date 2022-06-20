@@ -57,17 +57,11 @@ export const SignInPage: React.FC = () => {
       <Center width="100vw" height="100vh">
         <Container>
           <Stack spacing={4} w="100%">
-            <Button
-              variant="solid"
-              colorScheme="brand"
-              w="100%"
-              onClick={() => {}}
-            >
+            <Button variant="outline" w="100%" onClick={() => {}}>
               Signin with Discord
             </Button>
             {Object.values(availableProviders).map((provider) => (
               <Button
-                colorScheme="brand"
                 w="100%"
                 onClick={() => signIn(provider.id)}
                 key={provider.id}

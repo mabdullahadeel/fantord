@@ -1,5 +1,5 @@
 import { ChakraProvider } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { defaultTheme, themeKey } from "src/constants/theme";
 import { getTheme } from "./base";
 
@@ -12,17 +12,21 @@ interface ThemeProviderProps {
 }
 
 const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
-  const currentTheme = localStorage.getItem(themeKey) || defaultTheme;
-  const [themeName, setThemeName] = useState(currentTheme);
-  const theme = getTheme(themeName);
+  const [themeName, _setThemeName] = useState(defaultTheme);
 
-  const _setThemeName = (themeName: string): void => {
-    localStorage.setItem(themeKey, themeName);
-    setThemeName(themeName);
+  useEffect(() => {
+    const curThemeName = window.localStorage.getItem(themeKey) || defaultTheme;
+    setThemeName(curThemeName);
+  }, []);
+
+  const theme = getTheme(themeName);
+  const setThemeName = (themeName: string): void => {
+    window.localStorage.setItem(themeKey, themeName);
+    _setThemeName(themeName);
   };
 
   return (
-    <ThemeContext.Provider value={_setThemeName}>
+    <ThemeContext.Provider value={setThemeName}>
       <ChakraProvider theme={theme}>{children}</ChakraProvider>
     </ThemeContext.Provider>
   );
