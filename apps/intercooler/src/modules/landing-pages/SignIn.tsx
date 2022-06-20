@@ -9,6 +9,7 @@ import {
 } from "next-auth/react";
 import { BuiltInProviderType } from "next-auth/providers";
 import { useRouter } from "next/router";
+import Head from "next/head";
 
 type NextAuthProviders = Record<
   LiteralUnion<BuiltInProviderType, string>,
@@ -56,14 +57,22 @@ export const SignInPage: React.FC = () => {
       <Center width="100vw" height="100vh">
         <Container>
           <Stack spacing={4} w="100%">
+            <Button
+              variant="solid"
+              colorScheme="brand"
+              w="100%"
+              onClick={() => {}}
+            >
+              Signin with Discord
+            </Button>
             {Object.values(availableProviders).map((provider) => (
               <Button
-                colorScheme="purple"
+                colorScheme="brand"
                 w="100%"
                 onClick={() => signIn(provider.id)}
                 key={provider.id}
               >
-                {provider.name}
+                Signin with {provider.name}
               </Button>
             ))}
           </Stack>

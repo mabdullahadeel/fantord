@@ -1136,6 +1136,7 @@ __metadata:
     "@emotion/styled": 11
     "@fantord/datalink": "workspace:*"
     "@fantord/prisma": "workspace:*"
+    "@fontsource/space-grotesk": ^4.5.8
     "@next-auth/prisma-adapter": ^1.0.3
     "@types/react": 18.0.12
     "@types/react-dom": 18.0.5
@@ -1162,6 +1163,13 @@ __metadata:
     typescript: ^4.4.4
   languageName: unknown
   linkType: soft
+
+"@fontsource/space-grotesk@npm:^4.5.8":
+  version: 4.5.8
+  resolution: "@fontsource/space-grotesk@npm:4.5.8"
+  checksum: 8c3a9877323160ec258b07bead8f29974ebd1d2cad2dad80a67b3df498cc9a0186eadd84b78abe1826081d311b702181ebd7cd03f78dc919f55b9322e8ef397c
+  languageName: node
+  linkType: hard
 
 "@humanwhocodes/config-array@npm:^0.9.2":
   version: 0.9.5
