@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Button, Center, Container, Spinner, Stack } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Center,
+  Container,
+  Spinner,
+  Stack,
+} from "@chakra-ui/react";
 import {
   useSession,
   getProviders,
@@ -9,31 +16,10 @@ import {
 } from "next-auth/react";
 import { BuiltInProviderType } from "next-auth/providers";
 import { useRouter } from "next/router";
-
-import { FormLabel, Switch, useColorMode } from "@chakra-ui/react";
-export const ThemeToggler = ({ showLabel = false, ...rest }) => {
-  const { toggleColorMode, colorMode } = useColorMode();
-  return (
-    <>
-      {showLabel && (
-        <FormLabel htmlFor="theme-toggler" mb={0}>
-          Enable Dark Theme
-        </FormLabel>
-      )}
-      <Switch
-        id="theme-toggler"
-        size="lg"
-        isChecked={colorMode === "dark"}
-        isDisabled={false}
-        value={colorMode}
-        colorScheme="green"
-        mr={2}
-        onChange={toggleColorMode}
-        {...rest}
-      />
-    </>
-  );
-};
+import { LoginBGSVG } from "src/svg/LoginPage/LoginBGSVG";
+import FantordLogo from "src/assets/images/Logo.png";
+import Image from "next/image";
+import { WanderingSkull } from "src/svg/LoginPage/WanderingSkull";
 
 type NextAuthProviders = Record<
   LiteralUnion<BuiltInProviderType, string>,
@@ -62,7 +48,7 @@ export const SignInPage: React.FC = () => {
 
   if (status === "loading") {
     return (
-      <Center width="100vw" height="100vh">
+      <Center h="100vh">
         <Spinner size="lg" thickness="10px" color="purple.500" />
       </Center>
     );
@@ -70,7 +56,7 @@ export const SignInPage: React.FC = () => {
 
   if (!availableProviders) {
     return (
-      <Center width="100vw" height="100vh">
+      <Center h="100vh">
         <Spinner size="lg" thickness="10px" color="purple.500" />
       </Center>
     );
@@ -78,19 +64,35 @@ export const SignInPage: React.FC = () => {
 
   return (
     <>
-      <Center width="100vw" height="100vh">
+      <Box
+        h="100%"
+        w="100%"
+        role="banner"
+        opacity={{
+          lg: 1,
+          base: 0.2,
+        }}
+      >
+        <LoginBGSVG />
+      </Box>
+      <WanderingSkull />
+      <Center
+        h="100vh"
+        ml={{
+          lg: 400,
+          md: "2rem",
+          base: 0,
+        }}
+      >
         <Container>
           <Stack spacing={4} w="100%">
-            <Button variant="outline" w="100%" onClick={() => {}}>
-              Signin with Discord
-            </Button>
-            <Button variant="solid" w="100%" onClick={() => {}}>
-              Signin with Discord
-            </Button>
-            <ThemeToggler />
+            <Center w="100%" mb={4}>
+              <Image src={FantordLogo} alt="Logo" />
+            </Center>
             {Object.values(availableProviders).map((provider) => (
               <Button
                 w="100%"
+                size="lg"
                 onClick={() => signIn(provider.id)}
                 key={provider.id}
               >

@@ -1141,7 +1141,7 @@ __metadata:
     "@types/react": 18.0.12
     "@types/react-dom": 18.0.5
     eslint-config-next: 12.1.6
-    framer-motion: 6
+    framer-motion: ^6.3.11
     next: 12.1.6
     next-auth: ^4.4.0
     react: 18.1.0
@@ -2753,7 +2753,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"framer-motion@npm:6":
+"framer-motion@npm:^6.3.11":
   version: 6.3.11
   resolution: "framer-motion@npm:6.3.11"
   dependencies:
