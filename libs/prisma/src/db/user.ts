@@ -1,8 +1,6 @@
 import type { Account } from "next-auth";
 import { FantordUser, DiscordProfileResponse } from "../types/auth.types";
 import { prismaClient } from "./prisma-client";
-import type { Prisma } from "@prisma/client";
-import type { DiscordUserGuilds } from "@fantord/datalink";
 
 export const createFtdDiscordProfile = async ({
   user,
@@ -56,43 +54,5 @@ export const updateUserDiscordAccount = async ({
     });
   } catch (error) {
     return Promise.reject(error);
-  }
-};
-
-const generateGuildPayload = (
-  guilds: Omit<DiscordUserGuilds, "features">[],
-  user: FantordUser
-): Prisma.UserGuildsCreateManyInput[] => {
-  const res = [];
-  guilds.forEach((guild) => {
-    res.push({
-      discordGuildId: guild.id,
-      name: guild.name,
-      icon: guild.icon,
-      isOwner: guild.owner,
-      permissions: guild.permissions,
-      user: {
-        connect: {
-          id: user.id,
-        },
-      },
-    });
-  });
-  return res;
-};
-
-export const addUserGuilds = async ({
-  user,
-  guilds,
-}: {
-  user: FantordUser;
-  guilds: DiscordUserGuilds[];
-}) => {
-  try {
-    await prismaClient.userGuilds.createMany({
-      data: [...generateGuildPayload(guilds, user)],
-    });
-  } catch (err) {
-    return Promise.reject(err);
   }
 };
