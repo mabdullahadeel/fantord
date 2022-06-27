@@ -32,7 +32,7 @@ model Account {
 
 model DiscordProfile {
   id            String    @id @default(cuid())
-  userId        String    @map("user_id") @unique
+  userId        String    @unique @map("user_id")
   discordId     String    @unique @map("discord_id")
   username      String
   discriminator String
@@ -52,18 +52,17 @@ model DiscordProfile {
 }
 
 model User {
-  id              String          @id @default(cuid())
-  name            String?
-  email           String          @unique
-  emailVerified   DateTime?       @map("email_verified_at")
-  fantordUsername String          @map("fantord_username")
-  image           String?
-  accounts        Account[]
-  sessions        Session[]
-  discordProfile  DiscordProfile?
-  guilds          UserGuilds[]
-  createdAt       DateTime?       @default(now()) @map("created_at")
-  updatedAt       DateTime?       @default(now()) @updatedAt @map("updated_at")
+  id             String          @id @default(cuid())
+  name           String?
+  email          String          @unique
+  emailVerified  DateTime?       @map("email_verified_at")
+  image          String?
+  accounts       Account[]
+  sessions       Session[]
+  discordProfile DiscordProfile?
+  guilds         UserGuilds[]
+  createdAt      DateTime?       @default(now()) @map("created_at")
+  updatedAt      DateTime?       @default(now()) @updatedAt @map("updated_at")
 
   @@map("users")
 }

@@ -1,9 +1,9 @@
 import React, { useRef } from "react";
 import { motion, useMotionValue } from "framer-motion";
 
-interface WanderingSkull {}
+interface WanderingSkullProps {}
 
-export const WanderingSkull: React.FC<WanderingSkull> = (props) => {
+export const WanderingSkull: React.FC<WanderingSkullProps> = (props) => {
   const skullRef = useRef(null);
   const x = useMotionValue(0);
 

@@ -2,10 +2,6 @@ import NextAuth, { Awaitable } from "next-auth";
 import DiscordProvider from "next-auth/providers/discord";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { db, DiscordProfileResponse, FantordUser } from "@fantord/prisma";
-import {
-  generateFantordUsername,
-  generateProfileUrl,
-} from "src/server/utils/auth";
 import { UserClient } from "@fantord/datalink";
 import prisma from "src/lib/prisma";
 
@@ -19,16 +15,6 @@ export default NextAuth({
         params: {
           scope: "identify guilds email",
         },
-      },
-      profile(profile: DiscordProfileResponse): Awaitable<FantordUser> {
-        return {
-          id: profile.id,
-          name: profile.username,
-          email: profile.email,
-          fantordUsername: generateFantordUsername(profile),
-          image: generateProfileUrl(profile),
-          emailVerified: null,
-        };
       },
     }),
   ],
