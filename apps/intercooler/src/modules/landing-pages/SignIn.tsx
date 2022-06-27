@@ -20,6 +20,7 @@ import { LoginBGSVG } from "src/svg/LoginPage/LoginBGSVG";
 import FantordLogo from "src/assets/images/Logo.png";
 import Image from "next/image";
 import { WanderingSkull } from "src/svg/LoginPage/WanderingSkull";
+import ThemeToggler from "src/components/ThemeToggler/ThemeToggler";
 
 type NextAuthProviders = Record<
   LiteralUnion<BuiltInProviderType, string>,
@@ -99,6 +100,7 @@ export const SignInPage: React.FC = () => {
                 Signin with {provider.name}
               </Button>
             ))}
+            <ThemeToggler />
           </Stack>
         </Container>
       </Center>
