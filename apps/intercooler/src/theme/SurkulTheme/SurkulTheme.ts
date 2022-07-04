@@ -37,6 +37,6 @@ export const surkulTheme = extendTheme({
     }),
   },
   config: {
-    useSystemColorMode: true,
+    initialColorMode: "dark",
   },
 });
