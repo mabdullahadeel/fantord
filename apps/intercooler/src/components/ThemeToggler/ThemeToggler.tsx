@@ -14,7 +14,6 @@ const ThemeToggler: React.FC<ThemeTogglerProps> = (props) => {
         value={colorMode}
         onChange={toggleColorMode}
       />
-      <Switch id="theme-toggler" isDisabled={false} />
     </Box>
   );
 };

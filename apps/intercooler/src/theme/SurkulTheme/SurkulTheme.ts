@@ -1,5 +1,5 @@
 import { extendTheme } from "@chakra-ui/react";
-import { Button, Switch } from "./components";
+import { Button, Switch, Menu } from "./components";
 import { StyleFunctionProps, mode } from "@chakra-ui/theme-tools";
 
 export const surkulTheme = extendTheme({
@@ -27,6 +27,7 @@ export const surkulTheme = extendTheme({
   components: {
     Button,
     Switch,
+    Menu,
   },
   styles: {
     global: (props: StyleFunctionProps) => ({
