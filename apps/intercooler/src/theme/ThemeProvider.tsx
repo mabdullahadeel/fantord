@@ -1,6 +1,6 @@
 import { ChakraProvider } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
-import { defaultTheme, themeKey } from "src/constants/theme";
+import { defaultTheme, themeKey } from "src/lib/constants/theme";
 import { getTheme } from "./base";
 
 export const ThemeContext = React.createContext(
