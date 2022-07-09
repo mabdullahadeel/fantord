@@ -22,7 +22,7 @@ interface AppHeaderProps {}
 
 export const AppHeader: React.FC<AppHeaderProps> = ({}) => {
   return (
-    <Flex as="nav" px={10} py={4} gap={10} alignItems="center">
+    <Flex as="nav" px={10} h="90px" gap={10} alignItems="center">
       <Box
         _hover={{
           cursor: "pointer",

@@ -1,3 +1,3 @@
-import { SignInPage } from "src/modules/landing-pages/SignIn";
+import { SignInPage } from "src/content/landing-pages/SignIn";
 
 export default SignInPage;

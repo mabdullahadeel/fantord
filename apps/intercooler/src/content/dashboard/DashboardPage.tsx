@@ -3,7 +3,6 @@ import {
   Box,
   Button,
   Center,
-  Container,
   Flex,
   HStack,
   Spinner,
@@ -11,6 +10,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import Link from "next/link";
+import { PageBodyWrapper } from "src/components/shared/Containers";
 import { generateGuildIconUri } from "src/lib/helpers/discord";
 import { PageComponent } from "src/types/PageComponent";
 import { trpc } from "src/utils/trpc";
@@ -26,13 +26,7 @@ export const DashboardPage: PageComponent<DashboradPageProps> = ({}) => {
   );
 
   return (
-    <Container
-      maxWidth={{
-        base: "100%",
-        md: "70%",
-        lg: "60%",
-      }}
-    >
+    <PageBodyWrapper>
       <HStack my={5} pr={7} justifyContent="space-between">
         <Text fontSize="2xl">Fantord Profile</Text>
         <Link href="/dashboard/profile">
@@ -57,6 +51,7 @@ export const DashboardPage: PageComponent<DashboradPageProps> = ({}) => {
                   p={2}
                   borderRadius={5}
                   my={2}
+                  key={guild.id}
                 >
                   <HStack spacing={5}>
                     <Avatar
@@ -78,6 +73,6 @@ export const DashboardPage: PageComponent<DashboradPageProps> = ({}) => {
           )}
         </Box>
       </VStack>
-    </Container>
+    </PageBodyWrapper>
   );
 };
