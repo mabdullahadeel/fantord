@@ -10,9 +10,13 @@ import {
 } from "@chakra-ui/react";
 import Link from "next/link";
 import { PageComponent } from "src/types/PageComponent";
+import { trpc } from "src/utils/trpc";
+
 interface DashboradPageProps {}
 
 export const DashboardPage: PageComponent<DashboradPageProps> = ({}) => {
+  const { data } = trpc.useQuery(["users.get-user-guilds"], {});
+
   return (
     <Container
       maxWidth={{

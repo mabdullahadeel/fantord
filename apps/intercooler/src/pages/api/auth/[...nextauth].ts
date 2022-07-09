@@ -3,7 +3,8 @@ import DiscordProvider from "next-auth/providers/discord";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { db, DiscordProfileResponse, FantordUser } from "@fantord/prisma";
 import { UserClient } from "@fantord/datalink";
-import prisma from "src/lib/prisma";
+import { prisma } from "src/server/prisma";
+import { FANTORD_COOKIE_NAME } from "src/server/config";
 
 export default NextAuth({
   adapter: PrismaAdapter(prisma),
@@ -26,7 +27,7 @@ export default NextAuth({
   },
   cookies: {
     sessionToken: {
-      name: "__ftd-session",
+      name: FANTORD_COOKIE_NAME,
       options: {
         httpOnly: true,
         sameSite: "lax",
