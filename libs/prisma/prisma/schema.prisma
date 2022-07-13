@@ -52,17 +52,18 @@ model DiscordProfile {
 }
 
 model User {
-  id             String          @id @default(cuid())
-  name           String?
-  email          String          @unique
-  emailVerified  DateTime?       @map("email_verified_at")
-  image          String?
-  accounts       Account[]
-  sessions       Session[]
-  discordProfile DiscordProfile?
-  guilds         UserGuilds[]
-  createdAt      DateTime?       @default(now()) @map("created_at")
-  updatedAt      DateTime?       @default(now()) @updatedAt @map("updated_at")
+  id                 String                     @id @default(cuid())
+  name               String?
+  email              String                     @unique
+  emailVerified      DateTime?                  @map("email_verified_at")
+  image              String?
+  accounts           Account[]
+  sessions           Session[]
+  discordProfile     DiscordProfile?
+  guilds             UserGuilds[]
+  profilePreferences FantordProfilePreferences?
+  createdAt          DateTime?                  @default(now()) @map("created_at")
+  updatedAt          DateTime?                  @default(now()) @updatedAt @map("updated_at")
 
   @@map("users")
 }
@@ -80,6 +81,19 @@ model UserGuilds {
   user           User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("user_guilds")
+}
+
+model FantordProfilePreferences {
+  id         String    @id @default(cuid())
+  userId     String    @unique @map("user_id")
+  showPublic Boolean   @default(true) @map("show_public")
+  showGuilds Boolean   @default(true) @map("show_guilds")
+  createdAt  DateTime? @default(now()) @map("created_at")
+  updatedAt  DateTime? @default(now()) @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("fantord_profile_preferences")
 }
 
 model Session {
