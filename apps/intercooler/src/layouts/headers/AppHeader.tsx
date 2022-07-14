@@ -36,6 +36,7 @@ export const AppHeader: React.FC<AppHeaderProps> = ({}) => {
         <AppHeaderNavLink>Home</AppHeaderNavLink>
         <AppHeaderNavLink>Support</AppHeaderNavLink>
         <AppHeaderNavLink>Premium</AppHeaderNavLink>
+        <AppHeaderNavLink>Docs</AppHeaderNavLink>
       </Flex>
       <HStack>
         <Text fontSize="large">abdadeel#4567</Text>

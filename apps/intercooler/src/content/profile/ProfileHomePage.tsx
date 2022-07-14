@@ -1,9 +1,36 @@
-import { ArrowBackIcon, SettingsIcon } from "@chakra-ui/icons";
-import { Button, Flex, Grid, GridItem } from "@chakra-ui/react";
+import { SettingsIcon, AtSignIcon } from "@chakra-ui/icons";
+import { Flex, Grid, GridItem } from "@chakra-ui/react";
+import Link from "next/link";
 import { useRouter } from "next/router";
-import { PageBodyWrapper } from "src/components/shared/Containers";
+import BackButton from "src/components/shared/Buttons/BackButton";
+import { PageBodyContainer } from "src/components/shared/Containers";
 import { MenuOptionCard } from "src/components/ui/MenuOptionCard";
 import { PageComponent } from "src/types/PageComponent";
+
+type ProfileHomePageMenuOptions = {
+  id: number;
+  icon: JSX.Element;
+  title: string;
+  route: string;
+  description?: string;
+};
+
+const profileHomePageMenuOptions: ProfileHomePageMenuOptions[] = [
+  {
+    id: 1,
+    icon: <SettingsIcon h="50px" w="50px" />,
+    title: "Settings",
+    route: "profile/settings",
+    description: "Configure what to show on your public profile page",
+  },
+  {
+    id: 2,
+    icon: <AtSignIcon h="50px" w="50px" />,
+    title: "Referrals",
+    route: "profile/referrals",
+    description: "Invite friends and earn rewards (coming soon)",
+  },
+];
 
 interface ProfileHomePageProps {}
 
@@ -11,10 +38,8 @@ export const ProfileHomePage: PageComponent<ProfileHomePageProps> = ({}) => {
   const router = useRouter();
 
   return (
-    <PageBodyWrapper display="flex" flexDir="column">
-      <Button leftIcon={<ArrowBackIcon />} w="10%" onClick={router.back}>
-        Back
-      </Button>
+    <PageBodyContainer display="flex" flexDir="column">
+      <BackButton />
       <Flex flex={1}>
         <Grid
           templateColumns={{
@@ -27,22 +52,19 @@ export const ProfileHomePage: PageComponent<ProfileHomePageProps> = ({}) => {
           alignContent="center"
           w="100%"
         >
-          <GridItem>
-            <MenuOptionCard
-              startIcon={<SettingsIcon />}
-              title="Settings"
-              description="Some demo description related to settings"
-            />
-          </GridItem>
-          <GridItem>
-            <MenuOptionCard
-              startIcon={<SettingsIcon />}
-              title="Settings"
-              description="Some demo description related to settings"
-            />
-          </GridItem>
+          {profileHomePageMenuOptions?.map((option) => (
+            <Link href={option.route} key={option.id}>
+              <GridItem>
+                <MenuOptionCard
+                  startIcon={option.icon}
+                  title={option.title}
+                  description={option.description}
+                />
+              </GridItem>
+            </Link>
+          ))}
         </Grid>
       </Flex>
-    </PageBodyWrapper>
+    </PageBodyContainer>
   );
 };

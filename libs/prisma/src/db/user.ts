@@ -1,6 +1,6 @@
 import type { Account } from "next-auth";
 import { FantordUser, DiscordProfileResponse } from "../types/auth.types";
-import { prismaClient } from "./prisma-client";
+import { prisma as prismaClient } from "./prisma-client";
 
 export const createFtdDiscordProfile = async ({
   user,

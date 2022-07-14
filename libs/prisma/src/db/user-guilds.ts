@@ -1,6 +1,6 @@
 import { DiscordUserGuilds } from "@fantord/datalink";
 import { FantordUser } from "types";
-import { prismaClient } from "./prisma-client";
+import { prisma as prismaClient } from "./prisma-client";
 import { generateGuildPayload } from "./utils";
 
 export const addUserGuilds = async ({

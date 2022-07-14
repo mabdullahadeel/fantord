@@ -1,7 +1,7 @@
 import { Container } from "@chakra-ui/react";
 import { chakra } from "@chakra-ui/react";
 
-export const PageBodyWrapper = chakra(Container, {
+export const PageBodyContainer = chakra(Container, {
   baseStyle: {
     maxWidth: {
       base: "100%",

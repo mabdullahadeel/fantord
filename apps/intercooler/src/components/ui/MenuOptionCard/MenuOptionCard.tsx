@@ -1,7 +1,7 @@
 import { Flex, Stack, Text, VStack } from "@chakra-ui/react";
 import React from "react";
 
-interface MenuOptionCardProps {
+interface MenuOptionCardProps extends React.HTMLAttributes<HTMLDivElement> {
   title: string;
   description?: string;
   startIcon?: React.ReactNode;
