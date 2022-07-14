@@ -9,26 +9,20 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import React, { useMemo } from "react";
+import React from "react";
 import BackButton from "src/components/shared/Buttons/BackButton";
 import { PageBodyContainer } from "src/components/shared/Containers";
 import { PageComponent } from "src/types/PageComponent";
 import { useForm, Controller } from "react-hook-form";
 import { trpc } from "src/utils/trpc";
+import { type FantordProfilePreferences } from "@fantord/prisma";
+import SaveChangesPopper from "src/components/SaveChangesPopper/SaveChangesPopper";
 
 interface ProfileSettingsPageProps {}
 
 export const ProfileSettingsPage: PageComponent<
   ProfileSettingsPageProps
 > = ({}) => {
-  const { data, isLoading, refetch, isError } = trpc.useQuery(
-    ["users.get-ftd-profile-preferences"],
-    {
-      refetchOnWindowFocus: false,
-      refetchOnReconnect: false,
-    }
-  );
-
   const {
     handleSubmit,
     control,
@@ -36,29 +30,36 @@ export const ProfileSettingsPage: PageComponent<
     getValues,
     reset,
   } = useForm({
-    defaultValues: useMemo(() => {
-      if (data) {
-        return {
-          showPublic: data.showPublic,
-          showGuilds: data.showGuilds,
-        };
-      }
-    }, [data]),
+    defaultValues: {
+      showPublic: false,
+      showGuilds: false,
+    },
   });
 
-  const { mutate: updateProfilePrefMutation, isLoading: isUpdating } =
+  const { data, isLoading, refetch, isError } = trpc.useQuery(
+    ["users.get-ftd-profile-preferences"],
+    {
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+      onSuccess: (resData) => resetToValues(resData),
+    }
+  );
+
+  const { mutate: updateProfilePrefMutate, isLoading: isUpdating } =
     trpc.useMutation("users.update-ftd-profile-preferences", {
-      onSuccess: (resData) => {
-        reset({
-          showPublic: resData.showPublic,
-          showGuilds: resData.showGuilds,
-        });
-      },
+      onSuccess: (resData) => resetToValues(resData),
     });
+
+  const resetToValues = (resData: FantordProfilePreferences) => {
+    reset({
+      showPublic: resData.showPublic,
+      showGuilds: resData.showGuilds,
+    });
+  };
 
   const handleUpdate = () => {
     const values = getValues();
-    updateProfilePrefMutation({
+    updateProfilePrefMutate({
       showPublic: values.showPublic,
       showGuilds: values.showGuilds,
     });
@@ -131,9 +132,12 @@ export const ProfileSettingsPage: PageComponent<
             )}
           />
         </Flex>
-        {isDirty && (
-          <Button onClick={handleSubmit(handleUpdate)}>Update</Button>
-        )}
+        <SaveChangesPopper
+          isVisible={isDirty}
+          onSave={handleUpdate}
+          onCancel={() => reset()}
+          isLoading={isUpdating}
+        />
       </Box>
     </PageBodyContainer>
   );
