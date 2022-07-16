@@ -21,26 +21,28 @@ export const Button: ComponentStyleConfig = {
       height: "2rem",
     },
   },
-  // styles for different visual variants ("outline", "solid")
   variants: {
     solid: (props: StyleFunctionProps) => ({
-      bg: mode("brand.900", "brand.400")(props),
-      color: mode("brand.400", "brand.900")(props),
-      _active: {
-        bg: "brand.500",
-      },
-      _hover: {
-        opacity: 0.9,
-      },
+      ...(props.colorScheme === "brand" && {
+        bg: mode("brand.900", "brand.400")(props),
+        color: mode("brand.400", "brand.900")(props),
+        _active: {
+          bg: "brand.500",
+        },
+        _hover: {
+          opacity: 0.9,
+        },
+      }),
     }),
     outline: (props: StyleFunctionProps) => ({
-      bg: "transparent",
-      color: mode("brand.900", "brand.400")(props),
-      _active: {},
-      _loading: {},
+      ...(props.colorScheme === "brand" && {
+        bg: "transparent",
+        color: mode("brand.900", "brand.400")(props),
+        _active: {},
+        _loading: {},
+      }),
     }),
   },
-  // default values for 'size', 'variant' and 'colorScheme'
   defaultProps: {
     size: "md",
     variant: "solid",

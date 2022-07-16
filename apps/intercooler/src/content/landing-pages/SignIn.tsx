@@ -36,7 +36,7 @@ export const SignInPage: React.FC = () => {
     if (status === "unauthenticated") {
       listProviders();
     } else if (status === "authenticated") {
-      push("/dash");
+      push("/dashboard");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status]);

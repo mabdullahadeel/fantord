@@ -1,19 +1,10 @@
 import NextAuth, { Awaitable } from "next-auth";
 import DiscordProvider from "next-auth/providers/discord";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import {
-  PrismaClient,
-  db,
-  DiscordProfileResponse,
-  FantordUser,
-} from "@fantord/prisma";
-import {
-  generateFantordUsername,
-  generateProfileUrl,
-} from "src/server/utils/auth";
+import { db, DiscordProfileResponse, FantordUser } from "@fantord/prisma";
 import { UserClient } from "@fantord/datalink";
-
-const prisma = new PrismaClient();
+import { prisma } from "src/server/prisma";
+import { FANTORD_COOKIE_NAME } from "src/server/config";
 
 export default NextAuth({
   adapter: PrismaAdapter(prisma),
@@ -26,27 +17,17 @@ export default NextAuth({
           scope: "identify guilds email",
         },
       },
-      profile(profile: DiscordProfileResponse): Awaitable<FantordUser> {
-        return {
-          id: profile.id,
-          name: profile.username,
-          email: profile.email,
-          fantordUsername: generateFantordUsername(profile),
-          image: generateProfileUrl(profile),
-          emailVerified: null,
-        };
-      },
     }),
   ],
   pages: {
-    signIn: "/",
+    signIn: "/signin",
   },
   session: {
     strategy: "jwt",
   },
   cookies: {
     sessionToken: {
-      name: "__ftd-session",
+      name: FANTORD_COOKIE_NAME,
       options: {
         httpOnly: true,
         sameSite: "lax",
@@ -86,21 +67,7 @@ export default NextAuth({
   },
   events: {
     signIn: async ({ account, profile, isNewUser, user }) => {
-      if (isNewUser) {
-        try {
-          const userGuilds = await new UserClient().getUserGuilds(
-            account.access_token!
-          );
-          if (userGuilds && userGuilds.length > 0) {
-            await db.addUserGuilds({
-              user: user as FantordUser,
-              guilds: userGuilds,
-            });
-          }
-        } catch (error) {
-          console.log("Error while adding/updating user guilds", error);
-        }
-      } else {
+      if (!isNewUser) {
         try {
           await db.updateUserDiscordAccount({
             account,
@@ -109,6 +76,26 @@ export default NextAuth({
         } catch (error) {
           console.log("Could not update the account ", error);
         }
+      }
+      try {
+        const userGuilds = await new UserClient().getUserGuilds(
+          account.access_token!
+        );
+        if (userGuilds && userGuilds.length > 0) {
+          if (isNewUser) {
+            await db.addUserGuilds({
+              user: user as FantordUser,
+              guilds: userGuilds,
+            });
+          } else {
+            await db.patchUserGuilds({
+              user: user as FantordUser,
+              guilds: userGuilds,
+            });
+          }
+        }
+      } catch (error) {
+        console.log("Error while adding/updating user guilds", error);
       }
     },
   },
