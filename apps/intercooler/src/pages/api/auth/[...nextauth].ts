@@ -1,4 +1,4 @@
-import NextAuth, { Awaitable } from "next-auth";
+import NextAuth from "next-auth";
 import DiscordProvider from "next-auth/providers/discord";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { db, DiscordProfileResponse, FantordUser } from "@fantord/prisma";
@@ -50,53 +50,54 @@ export default NextAuth({
       return session;
     },
     async jwt({ user, profile, token, isNewUser, account }) {
-      const ftdUser = user as FantordUser;
-      const discordProfille = profile as DiscordProfileResponse;
-      if (isNewUser && account?.provider === "discord") {
-        try {
-          await db.createFtdDiscordProfile({
-            user: ftdUser,
-            profile: discordProfille,
-          });
-        } catch (error) {
-          throw error;
-        }
-      }
-      return token;
-    },
-  },
-  events: {
-    signIn: async ({ account, profile, isNewUser, user }) => {
-      if (!isNewUser) {
-        try {
-          await db.updateUserDiscordAccount({
-            account,
-            profile: profile as FantordUser,
-          });
-        } catch (error) {
-          console.log("Could not update the account ", error);
-        }
-      }
       try {
-        const userGuilds = await new UserClient().getUserGuilds(
-          account.access_token!
-        );
-        if (userGuilds && userGuilds.length > 0) {
-          if (isNewUser) {
-            await db.addUserGuilds({
-              user: user as FantordUser,
-              guilds: userGuilds,
-            });
-          } else {
-            await db.patchUserGuilds({
-              user: user as FantordUser,
-              guilds: userGuilds,
-            });
+        if (
+          account?.provider === "discord" &&
+          account.access_token &&
+          profile?.id &&
+          user?.id
+        ) {
+          // creating default public profile
+          await prisma.fantordProfilePreferences.upsert({
+            where: {
+              userId: user.id,
+            },
+            update: {},
+            create: {
+              user: {
+                connect: {
+                  id: user.id,
+                },
+              },
+            },
+          });
+          const userGuilds = await new UserClient().getUserGuilds(
+            account.access_token
+          );
+          if (userGuilds && userGuilds.length > 0) {
+            if (isNewUser) {
+              await db.addUserGuilds({
+                user: user as FantordUser,
+                guilds: userGuilds,
+              });
+            } else {
+              await db.patchUserGuilds({
+                user: user as FantordUser,
+                guilds: userGuilds,
+              });
+            }
           }
+          await db.createOrUpdateFtdDiscordProfile({
+            user: user as FantordUser,
+            profile: profile as DiscordProfileResponse,
+          });
+          await db.updateUserDiscordAccount({ account });
         }
       } catch (error) {
-        console.log("Error while adding/updating user guilds", error);
+        console.log("error", error);
+        return new Promise((_, reject) => reject(false));
       }
+      return token;
     },
   },
 });

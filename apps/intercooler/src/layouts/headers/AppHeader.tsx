@@ -17,6 +17,7 @@ import React from "react";
 import { AppHeaderNavLink } from "src/components/shared/Typography/NavLink";
 import ThemeToggler from "src/components/ThemeToggler/ThemeToggler";
 import Link from "next/link";
+import { signOut } from "next-auth/react";
 
 interface AppHeaderProps {}
 
@@ -54,7 +55,15 @@ export const AppHeader: React.FC<AppHeaderProps> = ({}) => {
             rightIcon={<ChevronDownIcon color="brand.500" w={8} h={8} />}
           ></MenuButton>
           <MenuList>
-            <MenuItem>Logout</MenuItem>
+            <MenuItem
+              onClick={() =>
+                signOut({
+                  redirect: true,
+                })
+              }
+            >
+              Logout
+            </MenuItem>
             <MenuItem>
               <Flex justifyContent="space-between" w="100%">
                 <Box as="span">Switch Theme</Box>

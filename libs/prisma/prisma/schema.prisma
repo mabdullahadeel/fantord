@@ -12,7 +12,7 @@ datasource db {
 
 model Account {
   id                String  @id @default(cuid())
-  userId            String  @map("user_id")
+  userId            String  @unique @map("user_id")
   type              String
   provider          String
   providerAccountId String  @map("provider_account_id")
@@ -23,8 +23,7 @@ model Account {
   scope             String?
   id_token          String? @db.Text
   session_state     String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
   @@map("accounts")
@@ -44,8 +43,7 @@ model DiscordProfile {
   mfa_enabled   Boolean
   createdAt     DateTime? @default(now()) @map("created_at")
   updatedAt     DateTime? @default(now()) @updatedAt @map("updated_at")
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, discordId])
   @@map("discord_profiles")
@@ -57,7 +55,7 @@ model User {
   email              String                     @unique
   emailVerified      DateTime?                  @map("email_verified_at")
   image              String?
-  accounts           Account[]
+  accounts           Account?
   sessions           Session[]
   discordProfile     DiscordProfile?
   guilds             UserGuilds[]

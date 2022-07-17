@@ -2,7 +2,7 @@ import type { Account } from "next-auth";
 import { FantordUser, DiscordProfileResponse } from "../types/auth.types";
 import { prisma as prismaClient } from "./prisma-client";
 
-export const createFtdDiscordProfile = async ({
+export const createOrUpdateFtdDiscordProfile = async ({
   user,
   profile,
 }: {
@@ -10,8 +10,12 @@ export const createFtdDiscordProfile = async ({
   profile: DiscordProfileResponse;
 }) => {
   try {
-    await prismaClient.discordProfile.create({
-      data: {
+    await prismaClient.discordProfile.upsert({
+      where: {
+        userId: user.id,
+      },
+      update: {},
+      create: {
         discordId: profile.id,
         discriminator: profile.discriminator,
         flags: profile.flags,
@@ -35,17 +39,15 @@ export const createFtdDiscordProfile = async ({
 
 export const updateUserDiscordAccount = async ({
   account,
-  profile,
 }: {
   account: Account;
-  profile: FantordUser;
 }) => {
   try {
     await prismaClient.account.update({
       where: {
         provider_providerAccountId: {
           provider: "discord",
-          providerAccountId: profile?.id || (account.providerAccountId as any),
+          providerAccountId: account.providerAccountId,
         },
       },
       data: {

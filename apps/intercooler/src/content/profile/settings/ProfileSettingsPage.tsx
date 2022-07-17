@@ -7,6 +7,7 @@ import {
   Spinner,
   Switch,
   Text,
+  useToast,
   VStack,
 } from "@chakra-ui/react";
 import React from "react";
@@ -24,7 +25,6 @@ export const ProfileSettingsPage: PageComponent<
   ProfileSettingsPageProps
 > = ({}) => {
   const {
-    handleSubmit,
     control,
     formState: { isDirty },
     getValues,
@@ -35,6 +35,7 @@ export const ProfileSettingsPage: PageComponent<
       showGuilds: false,
     },
   });
+  const toast = useToast();
 
   const { data, isLoading, refetch, isError } = trpc.useQuery(
     ["users.get-ftd-profile-preferences"],
@@ -47,7 +48,15 @@ export const ProfileSettingsPage: PageComponent<
 
   const { mutate: updateProfilePrefMutate, isLoading: isUpdating } =
     trpc.useMutation("users.update-ftd-profile-preferences", {
-      onSuccess: (resData) => resetToValues(resData),
+      onSuccess: (resData) => {
+        resetToValues(resData);
+        toast({
+          title: `Updated profile preferences`,
+          status: "success",
+          isClosable: true,
+          duration: 1000,
+        });
+      },
     });
 
   const resetToValues = (resData: FantordProfilePreferences) => {
