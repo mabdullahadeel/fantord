@@ -1,7 +1,6 @@
 import { createRouter } from "../createRouter";
 import z from "zod";
 import * as trpc from "@trpc/server";
-import { TRPCError } from "@trpc/server";
 
 export const userPublicProfileRouter = createRouter().query(
   "get-user-public-profile",
