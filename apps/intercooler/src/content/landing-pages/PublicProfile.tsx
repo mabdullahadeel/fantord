@@ -31,9 +31,6 @@ export const PublicProfile: PageComponent<PublicProfileProps> = ({}) => {
     ],
     {
       enabled: !!userDiscId && userDiscId.length > 7, // min - max for discord id is 18
-      onSuccess: (data) => {
-        console.log(data);
-      },
       retry: (_errCount, err) => {
         if (err.data?.code === "NOT_FOUND" || _errCount > 3) {
           return false;
@@ -52,7 +49,13 @@ export const PublicProfile: PageComponent<PublicProfileProps> = ({}) => {
     );
   }
 
-  if (!data) return null;
+  if (!data?.publicProfile) {
+    return (
+      <Center>
+        <Heading>User not found</Heading>
+      </Center>
+    );
+  }
 
   if (!data.profileIsPublic) {
     return (
@@ -88,7 +91,7 @@ export const PublicProfile: PageComponent<PublicProfileProps> = ({}) => {
             {data.guildsArePublic && (
               <VStack my={5} alignItems="flex-start" w="100%">
                 <Text fontSize="2xl" my={2}>
-                  My Servers
+                  {`${data.publicProfile.discordProfile?.username}'s Guilds`}
                 </Text>
                 <Box bg="brand.800" w="100%" p={5} borderRadius={5}>
                   {data.publicProfile.guilds.map((guild) => (
