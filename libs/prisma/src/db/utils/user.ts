@@ -14,11 +14,7 @@ export const generateGuildPayload = (
       icon: guild.icon,
       isOwner: guild.owner,
       permissions: guild.permissions,
-      user: {
-        connect: {
-          id: user.id,
-        },
-      },
+      userId: user.id,
     });
   });
   return res;
