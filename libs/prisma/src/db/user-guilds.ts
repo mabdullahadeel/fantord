@@ -11,8 +11,9 @@ export const addUserGuilds = async ({
   guilds: DiscordUserGuilds[];
 }) => {
   try {
+    const payload = generateGuildPayload(guilds, user);
     await prismaClient.userGuilds.createMany({
-      data: [...generateGuildPayload(guilds, user)],
+      data: [...payload],
     });
   } catch (err) {
     return Promise.reject(err);

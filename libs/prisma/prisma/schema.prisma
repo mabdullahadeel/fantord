@@ -71,13 +71,14 @@ model UserGuilds {
   discordGuildId String  @map("discord_guild_id")
   userId         String  @map("user_id")
   name           String
-  icon           String
+  icon           String?
   isOwner        Boolean @map("is_owner")
   hasFantordBot  Boolean @default(false) @map("has_fantord_bot")
   permissions    String
   showPublic     Boolean @default(true) @map("show_public")
   user           User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  @@index([userId, discordGuildId])
   @@map("user_guilds")
 }
 
