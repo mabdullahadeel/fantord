@@ -1,17 +1,7 @@
 {
   "name": "fantord",
   "private": true,
-  "workspaces": {
-    "packages": [
-      "apps/*",
-      "libs/*"
-    ]
-  },
   "scripts": {
-    "start": "yarn workspaces foreach run start",
-    "build": "yarn workspaces foreach run build",
-    "watch": "yarn workspaces foreach run build:watch",
-    "test": "yarn workspaces foreach run test",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\"",
     "lint:fix": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix"
   },
