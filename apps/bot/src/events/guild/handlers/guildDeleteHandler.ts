@@ -3,10 +3,11 @@ import { logger } from '../../../utils/logger';
 import { prisma } from '../../../prisma';
 
 /**
- * This handler is called when the bot joins a new guild
+ * This handler is called when the bot is kicked out
+ * of the server
  * @param guild
  */
-export const guildCreateHandler = async (guild: Guild) => {
+export const guildDeleteHandler = async (guild: Guild) => {
   try {
     await prisma.userGuilds.updateMany({
       where: {
@@ -18,7 +19,7 @@ export const guildCreateHandler = async (guild: Guild) => {
         },
       },
       data: {
-        hasFantordBot: true,
+        hasFantordBot: false,
       },
     });
   } catch (error) {

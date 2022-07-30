@@ -1,14 +1,15 @@
 import { fantordIntents } from './config/IntentOptions';
 import { Client, Partials } from 'discord.js';
 import { config } from 'dotenv';
-import { ExtendedBotClient } from 'types/bot.types';
-import { logger } from 'utils/logger';
+import { ExtendedBotClient } from './types/bot.types';
+import { logger } from './utils/logger';
 import { prisma } from './prisma';
-import { validateEnv } from 'utils/validateEnv';
+import { validateEnv } from './utils/validateEnv';
+import { botEventsHandler } from './events/botEventsHandler';
 
 config();
 
-export const main = async () => {
+(async () => {
   logger.info('Starting bot...');
   const bot = new Client({
     intents: fantordIntents,
@@ -18,9 +19,7 @@ export const main = async () => {
   validateEnv(bot);
   await prisma.$connect();
 
-  bot.on('guildCreate', (guild) => {
-    logger.info(guild.id);
-  });
+  botEventsHandler(bot);
 
   await bot
     .login(process.env.DISCORD_TOKEN)
@@ -30,6 +29,4 @@ export const main = async () => {
     .catch((err) => logger.error(err));
 
   // register commands here
-};
-
-main();
+})();

@@ -1,5 +1,5 @@
-import { ExtendedBotClient } from 'types/bot.types';
-import { logger } from 'utils/logger';
+import { ExtendedBotClient } from 'src/types/bot.types';
+import { logger } from '../utils/logger';
 import { guildEventsHandler } from './guild/guildEventsHandler';
 
 export const botEventsHandler = (bot: ExtendedBotClient) => {
