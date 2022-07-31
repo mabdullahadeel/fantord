@@ -72,6 +72,7 @@ model Guilds {
   name           String
   icon           String?
   ownerId        String?        @map("owner_id")
+  ownerDiscordId String?        @map("owner_discord_id")
   members        User[]
   permissions    String
   hasFantordBot  Boolean        @default(false) @map("has_fantord_bot")

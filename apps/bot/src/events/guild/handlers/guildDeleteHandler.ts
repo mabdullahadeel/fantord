@@ -9,15 +9,10 @@ import { prisma } from '../../../prisma';
  */
 export const guildDeleteHandler = async (guild: Guild) => {
   try {
-    await prisma.userGuilds.updateMany({
+    await prisma.guilds.updateMany({
       where: {
         discordGuildId: guild.id,
-        isOwner: true,
-        user: {
-          accounts: {
-            providerAccountId: guild.ownerId,
-          },
-        },
+        ownerDiscordId: guild.ownerId,
       },
       data: {
         hasFantordBot: false,

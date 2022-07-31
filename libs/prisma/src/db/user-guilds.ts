@@ -1,13 +1,16 @@
 import { DiscordUserGuilds } from "@fantord/datalink";
+import { Account } from "next-auth";
 import { FantordUser } from "types";
 import { prisma as prismaClient } from "./prisma-client";
 
 export const addUserGuilds = async ({
   user,
   guilds,
+  account,
 }: {
   user: FantordUser;
   guilds: DiscordUserGuilds[];
+  account: Account;
 }) => {
   try {
     guilds.forEach(async (guild) => {
@@ -18,6 +21,7 @@ export const addUserGuilds = async ({
           icon: guild.icon,
           permissions: guild.permissions,
           ownerId: guild.owner ? user.id : null,
+          ownerDiscordId: guild.owner ? account.providerAccountId : null,
           members: {
             connect: {
               id: user.id,
@@ -34,9 +38,11 @@ export const addUserGuilds = async ({
 export const patchUserGuilds = async ({
   user,
   guilds,
+  account,
 }: {
   user: FantordUser;
   guilds: DiscordUserGuilds[];
+  account: Account;
 }) => {
   try {
     const userGuilds = await prismaClient.guilds.findMany({
@@ -79,7 +85,7 @@ export const patchUserGuilds = async ({
     });
 
     if (newGuilds.length > 0) {
-      await addUserGuilds({ user, guilds: newGuilds });
+      await addUserGuilds({ user, guilds: newGuilds, account });
     }
 
     if (deletedGuildIds.length > 0) {
