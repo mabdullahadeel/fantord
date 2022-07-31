@@ -24,7 +24,13 @@ export const guildDeleteHandler = async (guild: Guild) => {
       },
     });
 
-    await prisma.$transaction([removeRoles, guildUpdate]);
+    const deleteAdm = prisma.guildAdministration.deleteMany({
+      where: {
+        guildId: guild.id,
+      },
+    });
+
+    await prisma.$transaction([deleteAdm, removeRoles, guildUpdate]);
   } catch (error) {
     logger.error(error);
   }

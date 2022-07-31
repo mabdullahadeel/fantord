@@ -67,18 +67,19 @@ model User {
 }
 
 model Guilds {
-  id             String         @id @unique // guild id coming from discord
+  id             String               @id @unique // guild id coming from discord
   name           String
   icon           String?
-  ownerId        String?        @map("owner_id")
-  ownerDiscordId String?        @map("owner_discord_id")
+  ownerId        String?              @map("owner_id")
+  ownerDiscordId String?              @map("owner_discord_id")
   members        User[]
   permissions    String
-  hasFantordBot  Boolean        @default(false) @map("has_fantord_bot")
-  createdAt      DateTime       @default(now()) @map("created_at")
-  updatedAt      DateTime       @default(now()) @updatedAt @map("updated_at")
+  hasFantordBot  Boolean              @default(false) @map("has_fantord_bot")
+  createdAt      DateTime             @default(now()) @map("created_at")
+  updatedAt      DateTime             @default(now()) @updatedAt @map("updated_at")
   guildSettings  GuildSettings?
   roles          Roles[]
+  administration GuildAdministration?
 
   @@index([ownerDiscordId])
   @@map("guilds")
@@ -119,14 +120,24 @@ model Tags {
 }
 
 model Roles {
-  id        String    @id @default(cuid())
-  name      String    @unique
-  colorHex  String?   @map("color_hex")
-  createdAt DateTime? @default(now()) @map("created_at")
-  guildId   String    @map("guild_id")
-  guild     Guilds    @relation(fields: [guildId], references: [id], onDelete: Cascade)
+  id                    String               @id
+  name                  String               @unique
+  colorHex              String?              @map("color_hex")
+  createdAt             DateTime?            @default(now()) @map("created_at")
+  guildId               String               @map("guild_id")
+  guild                 Guilds               @relation(fields: [guildId], references: [id], onDelete: Cascade)
+  guildAdministrationId String?
+  guildAdministration   GuildAdministration? @relation(fields: [guildAdministrationId], references: [guildId])
 
   @@map("roles")
+}
+
+model GuildAdministration {
+  guildId   String  @unique @map("guild_id")
+  guild     Guilds  @relation(fields: [guildId], references: [id], onDelete: Cascade)
+  joinRoles Roles[]
+
+  @@map("guild_administration")
 }
 
 model Session {

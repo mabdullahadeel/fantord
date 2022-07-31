@@ -11,7 +11,6 @@ export const guildCreateHandler = async (guild: Guild) => {
   try {
     const roles = await guild.roles.fetch();
     const rolesPayload: Prisma.RolesCreateManyInput[] = [];
-
     roles.forEach((role) => {
       if (role.managed || role.name === '@everyone') return;
       rolesPayload.push({
@@ -21,7 +20,6 @@ export const guildCreateHandler = async (guild: Guild) => {
         guildId: guild.id,
       });
     });
-
     const rolesCreate = prisma.roles.createMany({
       data: rolesPayload,
     });
@@ -36,7 +34,13 @@ export const guildCreateHandler = async (guild: Guild) => {
       },
     });
 
-    await prisma.$transaction([rolesCreate, updateGuild]);
+    const createAdministration = prisma.guildAdministration.create({
+      data: {
+        guildId: guild.id,
+      },
+    });
+
+    await prisma.$transaction([rolesCreate, createAdministration, updateGuild]);
   } catch (error) {
     logger.error(error);
   }

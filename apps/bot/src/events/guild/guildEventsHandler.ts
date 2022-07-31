@@ -1,10 +1,12 @@
 import { ExtendedBotClient } from 'src/types/bot.types';
-import { guildCreateHandler, guildDeleteHandler } from './handlers';
 import {
+  guildCreateHandler,
+  guildDeleteHandler,
+  memberAddHandler,
   roleCreated,
   roleDeleted,
   roleUpdated,
-} from './handlers/guildRolesHandlers';
+} from './handlers';
 
 export const guildEventsHandler = (bot: ExtendedBotClient) => {
   bot.on('guildCreate', (guild) => guildCreateHandler(guild));
@@ -14,4 +16,5 @@ export const guildEventsHandler = (bot: ExtendedBotClient) => {
   bot.on('roleUpdate', (oldRole, newRole) => {
     roleUpdated(oldRole, newRole);
   });
+  bot.on('guildMemberAdd', (member) => memberAddHandler(member));
 };
