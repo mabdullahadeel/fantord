@@ -6,16 +6,19 @@ export const userRouter = createRouter()
   .query("get-user-guilds", {
     resolve: async ({ ctx }) => {
       try {
-        const userGuilds = await ctx.prisma.userGuilds.findMany({
+        const userGuilds = await ctx.prisma.user.findFirst({
           where: {
-            user: {
-              id: ctx.req.user?.sub,
+            id: ctx.req.user?.sub,
+          },
+          include: {
+            guilds: {
+              where: {
+                ownerId: ctx.req.user?.sub,
+              },
             },
-            isOwner: true,
           },
         });
-
-        return userGuilds;
+        return userGuilds?.guilds;
       } catch (error) {
         throw new trpc.TRPCError({
           code: "BAD_REQUEST",

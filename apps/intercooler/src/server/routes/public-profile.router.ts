@@ -35,16 +35,7 @@ export const userPublicProfileRouter = createRouter().query(
             },
           },
           select: {
-            guilds: {
-              where: {
-                showPublic: true,
-                user: {
-                  profilePreferences: {
-                    showGuilds: true,
-                  },
-                },
-              },
-            },
+            guilds: true,
             id: true,
             image: true,
             name: true,

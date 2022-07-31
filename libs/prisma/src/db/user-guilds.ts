@@ -1,7 +1,6 @@
 import { DiscordUserGuilds } from "@fantord/datalink";
 import { FantordUser } from "types";
 import { prisma as prismaClient } from "./prisma-client";
-import { generateGuildPayload } from "./utils";
 
 export const addUserGuilds = async ({
   user,
@@ -11,9 +10,21 @@ export const addUserGuilds = async ({
   guilds: DiscordUserGuilds[];
 }) => {
   try {
-    const payload = generateGuildPayload(guilds, user);
-    await prismaClient.userGuilds.createMany({
-      data: [...payload],
+    guilds.forEach(async (guild) => {
+      await prismaClient.guilds.create({
+        data: {
+          discordGuildId: guild.id,
+          name: guild.name,
+          icon: guild.icon,
+          permissions: guild.permissions,
+          ownerId: guild.owner ? user.id : null,
+          members: {
+            connect: {
+              id: user.id,
+            },
+          },
+        },
+      });
     });
   } catch (err) {
     return Promise.reject(err);
@@ -28,23 +39,27 @@ export const patchUserGuilds = async ({
   guilds: DiscordUserGuilds[];
 }) => {
   try {
-    const userGuidlIds = await prismaClient.userGuilds.findMany({
+    const userGuilds = await prismaClient.guilds.findMany({
       where: {
-        user: {
-          id: user.id,
+        members: {
+          some: {
+            id: user.id,
+          },
         },
       },
       select: {
         discordGuildId: true,
+        ownerId: true,
       },
     });
-    const userGuildIdList = userGuidlIds.reduce(
+    const userGuildIdList = userGuilds.reduce(
       (total, current) => total.concat(current.discordGuildId),
       [] as string[]
     );
 
     const newGuilds: DiscordUserGuilds[] = [];
     const leftGuildIds: string[] = [];
+    const deletedGuildIds: string[] = [];
 
     guilds.forEach((guilds) => {
       if (!userGuildIdList.includes(guilds.id)) {
@@ -52,10 +67,14 @@ export const patchUserGuilds = async ({
       }
     });
 
-    userGuildIdList.forEach((guildId) => {
-      const userLeftGuild = guilds.find((guild) => guild.id === guildId);
-      if (!userLeftGuild) {
-        leftGuildIds.push(guildId);
+    userGuilds.forEach((g) => {
+      const idx = guilds.findIndex((guild) => guild.id === g.discordGuildId);
+      if (idx === -1) {
+        if (g.ownerId === user.id) {
+          deletedGuildIds.push(g.discordGuildId);
+        } else {
+          leftGuildIds.push(g.discordGuildId);
+        }
       }
     });
 
@@ -63,14 +82,32 @@ export const patchUserGuilds = async ({
       await addUserGuilds({ user, guilds: newGuilds });
     }
 
-    if (leftGuildIds.length > 0) {
-      await prismaClient.userGuilds.deleteMany({
+    if (deletedGuildIds.length > 0) {
+      await prismaClient.guilds.deleteMany({
         where: {
           discordGuildId: {
             in: leftGuildIds,
           },
         },
       });
+    }
+
+    if (leftGuildIds.length > 0) {
+      leftGuildIds.forEach(
+        async (gid) =>
+          await prisma.user.update({
+            where: {
+              id: user.id,
+            },
+            data: {
+              guilds: {
+                disconnect: {
+                  discordGuildId: gid,
+                },
+              },
+            },
+          })
+      );
     }
   } catch (err) {
     Promise.reject(err);

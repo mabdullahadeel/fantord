@@ -1,4 +1,4 @@
-import { Guild } from 'discord.js';
+import type { Guild } from 'discord.js';
 import { logger } from '../../../utils/logger';
 import { prisma } from '../../../prisma';
 
@@ -11,6 +11,7 @@ export const guildCreateHandler = async (guild: Guild) => {
     await prisma.userGuilds.updateMany({
       where: {
         discordGuildId: guild.id,
+        isOwner: true,
         user: {
           accounts: {
             providerAccountId: guild.ownerId,
