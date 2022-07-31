@@ -16,7 +16,7 @@ export const addUserGuilds = async ({
     guilds.forEach(async (guild) => {
       await prismaClient.guilds.create({
         data: {
-          discordGuildId: guild.id,
+          id: guild.id,
           name: guild.name,
           icon: guild.icon,
           permissions: guild.permissions,
@@ -54,12 +54,12 @@ export const patchUserGuilds = async ({
         },
       },
       select: {
-        discordGuildId: true,
+        id: true,
         ownerId: true,
       },
     });
     const userGuildIdList = userGuilds.reduce(
-      (total, current) => total.concat(current.discordGuildId),
+      (total, current) => total.concat(current.id),
       [] as string[]
     );
 
@@ -74,12 +74,12 @@ export const patchUserGuilds = async ({
     });
 
     userGuilds.forEach((g) => {
-      const idx = guilds.findIndex((guild) => guild.id === g.discordGuildId);
+      const idx = guilds.findIndex((guild) => guild.id === g.id);
       if (idx === -1) {
         if (g.ownerId === user.id) {
-          deletedGuildIds.push(g.discordGuildId);
+          deletedGuildIds.push(g.id);
         } else {
-          leftGuildIds.push(g.discordGuildId);
+          leftGuildIds.push(g.id);
         }
       }
     });
@@ -91,7 +91,7 @@ export const patchUserGuilds = async ({
     if (deletedGuildIds.length > 0) {
       await prismaClient.guilds.deleteMany({
         where: {
-          discordGuildId: {
+          id: {
             in: leftGuildIds,
           },
         },
@@ -108,7 +108,7 @@ export const patchUserGuilds = async ({
             data: {
               guilds: {
                 disconnect: {
-                  discordGuildId: gid,
+                  id: gid,
                 },
               },
             },

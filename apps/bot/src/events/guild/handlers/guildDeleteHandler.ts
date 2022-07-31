@@ -9,15 +9,22 @@ import { prisma } from '../../../prisma';
  */
 export const guildDeleteHandler = async (guild: Guild) => {
   try {
-    await prisma.guilds.updateMany({
+    const removeRoles = prisma.roles.deleteMany({
       where: {
-        discordGuildId: guild.id,
+        guildId: guild.id,
+      },
+    });
+    const guildUpdate = prisma.guilds.updateMany({
+      where: {
+        id: guild.id,
         ownerDiscordId: guild.ownerId,
       },
       data: {
         hasFantordBot: false,
       },
     });
+
+    await prisma.$transaction([removeRoles, guildUpdate]);
   } catch (error) {
     logger.error(error);
   }

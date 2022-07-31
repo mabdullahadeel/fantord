@@ -67,8 +67,7 @@ model User {
 }
 
 model Guilds {
-  id             String         @id @default(cuid())
-  discordGuildId String         @map("discord_guild_id")
+  id             String         @id @unique // guild id coming from discord
   name           String
   icon           String?
   ownerId        String?        @map("owner_id")
@@ -79,8 +78,9 @@ model Guilds {
   createdAt      DateTime       @default(now()) @map("created_at")
   updatedAt      DateTime       @default(now()) @updatedAt @map("updated_at")
   guildSettings  GuildSettings?
+  roles          Roles[]
 
-  @@unique([discordGuildId])
+  @@index([ownerDiscordId])
   @@map("guilds")
 }
 
@@ -118,6 +118,17 @@ model Tags {
   @@map("tags")
 }
 
+model Roles {
+  id        String    @id @default(cuid())
+  name      String    @unique
+  colorHex  String?   @map("color_hex")
+  createdAt DateTime? @default(now()) @map("created_at")
+  guildId   String    @map("guild_id")
+  guild     Guilds    @relation(fields: [guildId], references: [id], onDelete: Cascade)
+
+  @@map("roles")
+}
+
 model Session {
   id           String   @id @default(cuid())
   sessionToken String   @unique @map("session_token")
@@ -126,13 +137,4 @@ model Session {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("sessions")
-}
-
-model VerificationToken {
-  identifier String
-  token      String   @unique
-  expires    DateTime
-
-  @@unique([identifier, token])
-  @@map("verification_tokens")
 }
