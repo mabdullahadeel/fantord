@@ -121,7 +121,7 @@ model Tags {
 
 model Roles {
   id                    String               @id
-  name                  String               @unique
+  name                  String
   colorHex              String?              @map("color_hex")
   createdAt             DateTime?            @default(now()) @map("created_at")
   guildId               String               @map("guild_id")
