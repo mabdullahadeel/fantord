@@ -9,20 +9,26 @@ import { prisma } from '../../../prisma';
  */
 export const memberAddHandler = async (member: GuildMember) => {
   try {
+    if (member.user.bot) return;
     const guildAdmn = await prisma.guildAdministration.findFirst({
       where: {
         guildId: member.guild.id,
       },
       include: {
-        joinRoles: true,
+        joinRoles: {
+          select: {
+            id: true,
+          },
+        },
       },
     });
-    const roledAddPromises = [];
-    guildAdmn.joinRoles.map((role) => {
-      roledAddPromises.push(member.roles.add(role.id));
-    });
 
-    await Promise.all(roledAddPromises);
+    const idArr = guildAdmn.joinRoles.map((role) => role.id);
+    if (idArr.length > 0) {
+      const roles = await member.guild.roles.fetch();
+      const rolesToAdd = roles.filter((role) => idArr.includes(role.id));
+      await member.roles.add(rolesToAdd);
+    }
   } catch (error) {
     logger.error(error);
   }

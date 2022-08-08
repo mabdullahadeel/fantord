@@ -9,6 +9,23 @@ export const guildAdministration = createRouter()
     }),
     resolve: async ({ ctx, input }) => {
       try {
+        const guild = await ctx.prisma.guilds.findFirst({
+          where: {
+            id: input.guildId,
+          },
+        });
+        if (!guild) {
+          throw new trpc.TRPCError({
+            code: "NOT_FOUND",
+            message: "Guild not found",
+          });
+        }
+        if (guild.ownerId !== ctx.req.user?.sub) {
+          throw new trpc.TRPCError({
+            code: "FORBIDDEN",
+            message: "You are not allowed on this page",
+          });
+        }
         const admnMeta = await ctx.prisma.guildAdministration.findFirst({
           where: {
             guildId: input.guildId,
@@ -27,6 +44,7 @@ export const guildAdministration = createRouter()
           state: admnMeta,
         };
       } catch (error) {
+        if (error instanceof trpc.TRPCError) throw error;
         throw new trpc.TRPCError({
           code: "BAD_REQUEST",
           message:
@@ -46,6 +64,17 @@ export const guildAdministration = createRouter()
     }),
     resolve: async ({ ctx, input }) => {
       try {
+        const guild = await ctx.prisma.guilds.findFirst({
+          where: {
+            id: input.guildId,
+          },
+        });
+        if (guild?.ownerId !== ctx.req.user?.sub) {
+          throw new trpc.TRPCError({
+            code: "FORBIDDEN",
+            message: "You are not allowed on this page",
+          });
+        }
         await ctx.prisma.guildAdministration.update({
           where: {
             guildId: input.guildId,
@@ -60,6 +89,7 @@ export const guildAdministration = createRouter()
           success: true,
         };
       } catch (error) {
+        if (error instanceof trpc.TRPCError) throw error;
         throw new trpc.TRPCError({
           code: "BAD_REQUEST",
           message:
