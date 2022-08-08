@@ -10,7 +10,9 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@chakra-ui/react": "^2.2.1",
+    "@chakra-ui/icons": "^2.0.4",
+    "@chakra-ui/react": "^2.2.4",
+    "@chakra-ui/theme-tools": "^2.0.5",
     "@emotion/react": "11",
     "@emotion/styled": "11",
     "@fantord/datalink": "workspace:*",
@@ -21,6 +23,7 @@
     "@trpc/next": "^9.25.3",
     "@trpc/react": "^9.25.3",
     "@trpc/server": "^9.25.3",
+    "chroma-js": "^2.4.2",
     "framer-motion": "^6.3.11",
     "next": "12.1.6",
     "next-auth": "^4.4.0",
@@ -28,15 +31,14 @@
     "react-dom": "18.1.0",
     "react-hook-form": "^7.33.1",
     "react-query": "^3.39.1",
+    "react-select": "^5.4.0",
     "superjson": "^1.9.1",
     "zod": "^3.17.3"
   },
   "devDependencies": {
+    "@types/chroma-js": "^2.1.4",
     "@types/react": "18.0.12",
     "@types/react-dom": "18.0.5",
     "eslint-config-next": "12.1.6"
-  },
-  "resolutions": {
-    ".prisma": "link:node-modules/.prisma"
   }
 }

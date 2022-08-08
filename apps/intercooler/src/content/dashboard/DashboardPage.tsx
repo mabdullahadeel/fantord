@@ -56,17 +56,22 @@ export const DashboardPage: PageComponent<DashboradPageProps> = ({}) => {
                   <HStack spacing={5}>
                     <Avatar
                       size="md"
-                      src={generateGuildIconUri(
-                        guild.discordGuildId,
-                        guild.icon
-                      )}
+                      src={generateGuildIconUri(guild.id, guild.icon)}
                       name={guild.name}
                     />
                     <Text>{guild.name}</Text>
                   </HStack>
-                  <Button>
-                    {guild.hasFantordBot ? "Manage" : "Invite Bot"}
-                  </Button>
+                  <Link
+                    href={
+                      guild.hasFantordBot
+                        ? `/dashboard/${guild.id}`
+                        : process.env.NEXT_PUBLIC_BOT_INVITE_LINK || ""
+                    }
+                  >
+                    <Button>
+                      {guild.hasFantordBot ? "Manage" : "Invite Bot"}
+                    </Button>
+                  </Link>
                 </Flex>
               </>
             ))

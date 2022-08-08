@@ -8,7 +8,7 @@ export function createRouter() {
   return router<Context>().transformer(superjson);
 }
 
-export function createProtetedRouter() {
+export function createProtectedRouter() {
   return router<Context>()
     .transformer(superjson)
     .middleware(async ({ ctx, next }) => {

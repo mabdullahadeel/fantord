@@ -79,11 +79,13 @@ export default NextAuth({
               await db.addUserGuilds({
                 user: user as FantordUser,
                 guilds: userGuilds,
+                account,
               });
             } else {
               await db.patchUserGuilds({
                 user: user as FantordUser,
                 guilds: userGuilds,
+                account,
               });
             }
           }

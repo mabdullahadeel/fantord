@@ -58,7 +58,7 @@ model User {
   accounts           Account?
   sessions           Session[]
   discordProfile     DiscordProfile?
-  guilds             UserGuilds[]
+  guilds             Guilds[]
   profilePreferences FantordProfilePreferences?
   createdAt          DateTime?                  @default(now()) @map("created_at")
   updatedAt          DateTime?                  @default(now()) @updatedAt @map("updated_at")
@@ -66,19 +66,23 @@ model User {
   @@map("users")
 }
 
-model UserGuilds {
-  id             String  @id @default(cuid())
-  discordGuildId String  @map("discord_guild_id")
-  userId         String  @map("user_id")
+model Guilds {
+  id             String               @id @unique // guild id coming from discord
   name           String
-  icon           String
-  isOwner        Boolean @map("is_owner")
-  hasFantordBot  Boolean @default(false) @map("has_fantord_bot")
+  icon           String?
+  ownerId        String?              @map("owner_id")
+  ownerDiscordId String?              @map("owner_discord_id")
+  members        User[]
   permissions    String
-  showPublic     Boolean @default(true) @map("show_public")
-  user           User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  hasFantordBot  Boolean              @default(false) @map("has_fantord_bot")
+  createdAt      DateTime             @default(now()) @map("created_at")
+  updatedAt      DateTime             @default(now()) @updatedAt @map("updated_at")
+  guildSettings  GuildSettings?
+  roles          Roles[]
+  administration GuildAdministration?
 
-  @@map("user_guilds")
+  @@index([ownerDiscordId])
+  @@map("guilds")
 }
 
 model FantordProfilePreferences {
@@ -94,6 +98,48 @@ model FantordProfilePreferences {
   @@map("fantord_profile_preferences")
 }
 
+model GuildSettings {
+  id         String    @id @default(cuid())
+  guildId    String    @unique @map("guild_id")
+  showPublic Boolean   @default(true) @map("show_public")
+  createdAt  DateTime? @default(now()) @map("created_at")
+  updatedAt  DateTime? @default(now()) @updatedAt @map("updated_at")
+  guild      Guilds    @relation(fields: [guildId], references: [id], onDelete: Cascade)
+  tags       Tags[]
+
+  @@map("guild_settings")
+}
+
+model Tags {
+  id        String          @id @default(cuid())
+  name      String          @unique
+  createdAt DateTime?       @default(now()) @map("created_at")
+  guilds    GuildSettings[]
+
+  @@map("tags")
+}
+
+model Roles {
+  id                    String               @id
+  name                  String
+  colorHex              String?              @map("color_hex")
+  createdAt             DateTime?            @default(now()) @map("created_at")
+  guildId               String               @map("guild_id")
+  guild                 Guilds               @relation(fields: [guildId], references: [id], onDelete: Cascade)
+  guildAdministrationId String?
+  guildAdministration   GuildAdministration? @relation(fields: [guildAdministrationId], references: [guildId])
+
+  @@map("roles")
+}
+
+model GuildAdministration {
+  guildId   String  @unique @map("guild_id")
+  guild     Guilds  @relation(fields: [guildId], references: [id], onDelete: Cascade)
+  joinRoles Roles[]
+
+  @@map("guild_administration")
+}
+
 model Session {
   id           String   @id @default(cuid())
   sessionToken String   @unique @map("session_token")
@@ -102,13 +148,4 @@ model Session {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("sessions")
-}
-
-model VerificationToken {
-  identifier String
-  token      String   @unique
-  expires    DateTime
-
-  @@unique([identifier, token])
-  @@map("verification_tokens")
 }
