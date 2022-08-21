@@ -57,11 +57,11 @@ export const userPublicProfileRouter = createRouter().query(
           profileIsPublic,
           publicProfile,
         };
-      } catch (_error) {
-        console.log(_error);
+      } catch (error) {
+        if (error instanceof trpc.TRPCError) throw error;
         throw new trpc.TRPCError({
-          code: "NOT_FOUND",
-          message: "Invalid Discord Account Id",
+          code: "BAD_REQUEST",
+          message: "Could not get user profile",
         });
       }
     },

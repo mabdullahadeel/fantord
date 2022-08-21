@@ -6,7 +6,7 @@ export function createContext({
   req,
   res,
 }: {
-  req: NextApiRequest & { user: JWT | null };
+  req: NextApiRequest & { user?: JWT | null };
   res: NextApiResponse;
 }) {
   return {
