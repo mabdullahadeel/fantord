@@ -1,8 +1,9 @@
 import {
+  AbsoluteCenter,
   Avatar,
+  Badge,
   Box,
   Button,
-  Center,
   Flex,
   Heading,
   HStack,
@@ -19,10 +20,10 @@ import { trpc } from "src/utils/trpc";
 
 interface PublicProfileProps {}
 
-export const PublicProfile: PageComponent<PublicProfileProps> = ({}) => {
+export const PublicProfile: PageComponent<PublicProfileProps> = () => {
   const router = useRouter();
   const { userDiscId } = router.query;
-  const { data, isLoading } = trpc.useQuery(
+  const { data, isLoading, isIdle, isError } = trpc.useQuery(
     [
       "public-user.get-user-public-profile",
       {
@@ -41,27 +42,33 @@ export const PublicProfile: PageComponent<PublicProfileProps> = ({}) => {
     }
   );
 
-  if (isLoading) {
+  if (isLoading || isIdle) {
     return (
-      <Center>
-        <Spinner />
-      </Center>
+      <Box h="100vh">
+        <AbsoluteCenter>
+          <Spinner />
+        </AbsoluteCenter>
+      </Box>
     );
   }
 
-  if (!data?.publicProfile) {
+  if (isError) {
     return (
-      <Center>
-        <Heading>User not found</Heading>
-      </Center>
+      <Box h={"100vh"}>
+        <AbsoluteCenter>
+          <Heading>Error loading user 😕</Heading>
+        </AbsoluteCenter>
+      </Box>
     );
   }
 
-  if (!data.profileIsPublic) {
+  if (data && !data.publicProfile) {
     return (
-      <PageBodyContainer>
-        <Heading>Profile is not public</Heading>
-      </PageBodyContainer>
+      <Box h={"100vh"}>
+        <AbsoluteCenter>
+          <Heading>User not found 😕</Heading>
+        </AbsoluteCenter>
+      </Box>
     );
   }
 
@@ -87,6 +94,13 @@ export const PublicProfile: PageComponent<PublicProfileProps> = ({}) => {
                 {data.publicProfile.discordProfile?.username}#
                 {data.publicProfile.discordProfile?.discriminator}
               </Heading>
+              <a
+                href={`https://discordapp.com/users/${data.publicProfile.discordProfile?.discordId}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Button>Add Friend</Button>
+              </a>
             </VStack>
             {data.guildsArePublic && (
               <VStack my={5} alignItems="flex-start" w="100%">
@@ -106,15 +120,14 @@ export const PublicProfile: PageComponent<PublicProfileProps> = ({}) => {
                       <HStack spacing={5}>
                         <Avatar
                           size="md"
-                          src={generateGuildIconUri(
-                            guild.discordGuildId,
-                            guild.icon
-                          )}
+                          src={generateGuildIconUri(guild.id, guild.icon)}
                           name={guild.name}
                         />
                         <Text>{guild.name}</Text>
+                        {guild.ownerDiscordId === userDiscId && (
+                          <Badge colorScheme="green">Owner</Badge>
+                        )}
                       </HStack>
-                      <Button>Click to Join via Referral</Button>
                     </Flex>
                   ))}
                 </Box>

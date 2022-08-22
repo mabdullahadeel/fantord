@@ -28,6 +28,27 @@ export const userRouter = createRouter()
       }
     },
   })
+  .query("get-user-profile", {
+    resolve: async ({ ctx }) => {
+      try {
+        const userProfile = await ctx.prisma.user.findFirst({
+          where: {
+            id: ctx.req.user?.sub,
+          },
+          include: {
+            discordProfile: true,
+          },
+        });
+        return userProfile;
+      } catch (error) {
+        throw new trpc.TRPCError({
+          code: "BAD_REQUEST",
+          message:
+            "Could not find your profile. Try logging out and logging back in.",
+        });
+      }
+    },
+  })
   .query("get-ftd-profile-preferences", {
     resolve: async ({ ctx }) => {
       try {

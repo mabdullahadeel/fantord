@@ -11,6 +11,7 @@ import { loggerLink } from "@trpc/client/links/loggerLink";
 import { httpBatchLink } from "@trpc/client/links/httpBatchLink";
 import { url } from "src/lib/constants/trpc";
 import superjson from "superjson";
+import { LoggedInUserProvider } from "src/context/userContext";
 
 type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -27,7 +28,9 @@ function MyApp({ Component, pageProps }: MyAppProps) {
   return (
     <ThemeProvider>
       <SessionProvider session={nextAuthSession}>
-        {getLayout(<Component {...restPageProps} />)}
+        <LoggedInUserProvider>
+          {getLayout(<Component {...restPageProps} />)}
+        </LoggedInUserProvider>
       </SessionProvider>
     </ThemeProvider>
   );
@@ -43,6 +46,21 @@ export default withTRPC<AppRouter>({
       }),
     ];
 
+    if (typeof window !== "undefined") {
+      return {
+        queryClientConfig: {
+          defaultOptions: {
+            queries: {
+              staleTime: 1000,
+              notifyOnChangeProps: "tracked",
+            },
+          },
+        },
+        links,
+        transformer: superjson,
+      };
+    }
+
     return {
       queryClientConfig: {
         defaultOptions: {
@@ -52,6 +70,8 @@ export default withTRPC<AppRouter>({
           },
         },
       },
+      links,
+      transformer: superjson,
       headers() {
         if (ctx?.req) {
           return {
@@ -61,8 +81,6 @@ export default withTRPC<AppRouter>({
         }
         return {};
       },
-      links,
-      transformer: superjson,
     };
   },
 })(MyApp);

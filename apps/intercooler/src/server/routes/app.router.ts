@@ -5,7 +5,7 @@ import { userRouter } from "./user.router";
 
 export const appRouter = createProtectedRouter()
   .merge("users.", userRouter)
-  .merge("public-user.", userPublicProfileRouter)
-  .merge("guild-administration.", guildAdministration);
+  .merge("public-user.", userPublicProfileRouter);
+// .merge("guild-administration.", guildAdministration);
 
 export type AppRouter = typeof appRouter;

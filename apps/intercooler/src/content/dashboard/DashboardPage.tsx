@@ -44,36 +44,34 @@ export const DashboardPage: PageComponent<DashboradPageProps> = ({}) => {
             </Center>
           ) : (
             data?.map((guild) => (
-              <>
-                <Flex
-                  justifyContent="space-between"
-                  bg="brand.700"
-                  p={2}
-                  borderRadius={5}
-                  my={2}
-                  key={guild.id}
+              <Flex
+                justifyContent="space-between"
+                bg="brand.700"
+                p={2}
+                borderRadius={5}
+                my={2}
+                key={guild.id}
+              >
+                <HStack spacing={5}>
+                  <Avatar
+                    size="md"
+                    src={generateGuildIconUri(guild.id, guild.icon)}
+                    name={guild.name}
+                  />
+                  <Text>{guild.name}</Text>
+                </HStack>
+                {/* <Link
+                  href={
+                    guild.hasFantordBot
+                      ? `/dashboard/${guild.id}`
+                      : process.env.NEXT_PUBLIC_BOT_INVITE_LINK || ""
+                  }
                 >
-                  <HStack spacing={5}>
-                    <Avatar
-                      size="md"
-                      src={generateGuildIconUri(guild.id, guild.icon)}
-                      name={guild.name}
-                    />
-                    <Text>{guild.name}</Text>
-                  </HStack>
-                  <Link
-                    href={
-                      guild.hasFantordBot
-                        ? `/dashboard/${guild.id}`
-                        : process.env.NEXT_PUBLIC_BOT_INVITE_LINK || ""
-                    }
-                  >
-                    <Button>
-                      {guild.hasFantordBot ? "Manage" : "Invite Bot"}
-                    </Button>
-                  </Link>
-                </Flex>
-              </>
+                  <Button>
+                    {guild.hasFantordBot ? "Manage" : "Invite Bot"}
+                  </Button>
+                </Link> */}
+              </Flex>
             ))
           )}
         </Box>
