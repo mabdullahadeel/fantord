@@ -48,6 +48,7 @@ export const userPublicProfileRouter = createRouter().query(
               select: {
                 username: true,
                 discriminator: true,
+                discordId: true,
               },
             },
           },

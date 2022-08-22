@@ -19,7 +19,7 @@ import { trpc } from "src/utils/trpc";
 
 interface PublicProfileProps {}
 
-export const PublicProfile: PageComponent<PublicProfileProps> = ({}) => {
+export const PublicProfile: PageComponent<PublicProfileProps> = () => {
   const router = useRouter();
   const { userDiscId } = router.query;
   const { data, isLoading, isIdle, isError } = trpc.useQuery(
@@ -93,6 +93,13 @@ export const PublicProfile: PageComponent<PublicProfileProps> = ({}) => {
                 {data.publicProfile.discordProfile?.username}#
                 {data.publicProfile.discordProfile?.discriminator}
               </Heading>
+              <a
+                href={`https://discordapp.com/users/${data.publicProfile.discordProfile?.discordId}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Button>Add Friend</Button>
+              </a>
             </VStack>
             {data.guildsArePublic && (
               <VStack my={5} alignItems="flex-start" w="100%">
@@ -117,7 +124,6 @@ export const PublicProfile: PageComponent<PublicProfileProps> = ({}) => {
                         />
                         <Text>{guild.name}</Text>
                       </HStack>
-                      <Button>Join</Button>
                     </Flex>
                   ))}
                 </Box>
