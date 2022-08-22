@@ -11,7 +11,11 @@ export const userRouter = createRouter()
             id: ctx.req.user?.sub,
           },
           include: {
-            guilds: true,
+            guilds: {
+              where: {
+                ownerId: ctx.req.user?.sub,
+              },
+            },
           },
         });
         return userGuilds?.guilds;

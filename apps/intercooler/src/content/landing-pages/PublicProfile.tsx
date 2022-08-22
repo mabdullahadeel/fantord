@@ -1,6 +1,7 @@
 import {
   AbsoluteCenter,
   Avatar,
+  Badge,
   Box,
   Button,
   Flex,
@@ -123,6 +124,9 @@ export const PublicProfile: PageComponent<PublicProfileProps> = () => {
                           name={guild.name}
                         />
                         <Text>{guild.name}</Text>
+                        {guild.ownerDiscordId === userDiscId && (
+                          <Badge colorScheme="green">Owner</Badge>
+                        )}
                       </HStack>
                     </Flex>
                   ))}
